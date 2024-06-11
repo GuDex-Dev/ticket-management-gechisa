@@ -27,7 +27,6 @@ export default function AppSessionContextProvider({ children, session }) {
   useEffect(() => {
     if (theme) {
       document.body.className = theme;
-      console.log(`Theme applied: ${theme}`);
     }
   }, [theme]);
 

@@ -16,8 +16,11 @@ function Navbar({ role }) {
 
   return (
     <header className="bg-primary shadow-md">
-      <nav className="container mx-auto flex p-4 items-center text-lg font-bold ">
-        <Link href="/" className={cn(navigationMenuTriggerStyle(), "text-3xl")}>
+      <nav className="container h-16 mx-auto flex items-center text-lg font-bold ">
+        <Link
+          href={`/${role.toLowerCase()}/dashboard`}
+          className={cn(navigationMenuTriggerStyle(), "text-3xl")}
+        >
           GECHISA
           {role === ROLES.ADMINISTRATOR
             ? " - Admin"
@@ -27,7 +30,7 @@ function Navbar({ role }) {
             ? " - Vendedor"
             : ""}
         </Link>
-        <div className="flex ml-auto space-x-4 items-center">
+        <div className="flex ml-auto items-center">
           {data?.user?.role !== role ? (
             <>
               <Link
@@ -53,7 +56,7 @@ function Navbar({ role }) {
             </>
           )}
 
-          <ToggleThemeButton />
+          <ToggleThemeButton className="ml-4" />
         </div>
       </nav>
     </header>
@@ -61,7 +64,7 @@ function Navbar({ role }) {
 }
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-10 w-max items-center justify-center rounded-md bg-primary text-primary-foreground px-4 py-2 transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+  "group inline-flex h-16 w-max items-center justify-center rounded-none bg-primary text-primary-foreground px-4 py-2 transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
 );
 
 export default Navbar;

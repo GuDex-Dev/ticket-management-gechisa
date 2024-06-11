@@ -1,6 +1,6 @@
 // constants.js
 export const ROLES = {
   CLIENT: "Client",
-  SALESPERSON: "SalesPerson",
+  SALESPERSON: "Salesperson",
   ADMINISTRATOR: "Administrator",
 };

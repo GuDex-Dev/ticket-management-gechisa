@@ -32,7 +32,7 @@ const authOptions = {
             result = await executeProcedure(
               credentials,
               inputs,
-              "spSalesPerson_Login"
+              "spSalesperson_Login"
             );
             break;
           case ROLES.ADMINISTRATOR:
@@ -48,7 +48,7 @@ const authOptions = {
 
         if (result.recordset[0].StatusCode === 0) {
           return {
-            id: result.recordset[0].ID_Client,
+            id: result.recordset[0][`ID_${credentials.role}`],
             name: result.recordset[0].first_name,
             email: result.recordset[0].email,
             phone: result.recordset[0].phone,
