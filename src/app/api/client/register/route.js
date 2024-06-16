@@ -37,23 +37,22 @@ export async function POST(req, res) {
     const result = await db.executeProcedure(data, INPUTS, PROCEDURE_NAME);
 
     if (result.recordset.length > 0) {
-      const statusCode = result.recordset[0].StatusCode;
-      if (statusCode === 0) {
+      if (result.recordset[0].ErrorNumber) {
+        const { ErrorNumber, ErrorMessage } = result.recordset[0];
+        return NextResponse.json(
+          {
+            ok: false,
+            message: `Error ${ErrorNumber}: ${ErrorMessage}`,
+          },
+          { status: 400 }
+        );
+      } else {
         return NextResponse.json(
           {
             ok: true,
             message: "Registro exitoso",
           },
           { status: 200 }
-        );
-      } else if (statusCode < 0) {
-        let errorMessage = result.recordset[0].ErrorMessage;
-        return NextResponse.json(
-          {
-            ok: false,
-            message: errorMessage,
-          },
-          { status: 400 }
         );
       }
     }
