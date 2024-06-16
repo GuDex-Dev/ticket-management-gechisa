@@ -1,4 +1,6 @@
 "use client";
+
+// * IMPORTS UI
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +11,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -21,6 +19,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
+// * IMPORTS UTILS
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -87,8 +90,9 @@ const formSchema = z
   });
 
 export function RegisterClientPage() {
-  const { toast } = useToast();
+  // * HOOKS
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
