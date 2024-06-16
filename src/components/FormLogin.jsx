@@ -1,6 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
@@ -9,8 +15,11 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import AlertError from "@/components/AlertError";
 import { ROLES } from "@/constants";
+import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
 
 export function FormLogin({ role = ROLES.CLIENT }) {
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
@@ -49,6 +58,10 @@ export function FormLogin({ role = ROLES.CLIENT }) {
       setError(res.error);
     } else {
       setError(null);
+      toast({
+        title: "Inicio de sesión exitoso",
+        className: "bg-primary text-primary-foreground font-bold",
+      });
     }
   };
 
@@ -114,6 +127,14 @@ export function FormLogin({ role = ROLES.CLIENT }) {
             </div>
 
             <div className="flex flex-col space-y-4 items-center">
+              {role === ROLES.CLIENT && (
+                <CardDescription>
+                  No tienes una cuenta?{" "}
+                  <Link href="/client/register" className="text-blue-500">
+                    Regístrate
+                  </Link>
+                </CardDescription>
+              )}
               <Button className="w-full" type="submit">
                 Iniciar Sesión
               </Button>

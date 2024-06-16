@@ -41,7 +41,7 @@ function Navbar({ role }) {
               </Link>
               {role === ROLES.CLIENT && (
                 <Link
-                  href={`/client/auth/register`}
+                  href={`/client/register`}
                   className={navigationMenuTriggerStyle()}
                 >
                   Regístrate

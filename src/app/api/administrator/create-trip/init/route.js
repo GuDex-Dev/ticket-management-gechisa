@@ -49,7 +49,7 @@ export async function POST(req, res) {
       return NextResponse.json({ destination_city, bus, driver });
     }
   } catch (error) {
-    console.error("Error executing spAdministrator_CreateTrip_Init:", error);
+    console.error(`Error executing ${PROCEDURE_NAME}:`, error);
     return NextResponse.json({
       error: "An error occurred during trip initialization.",
     });

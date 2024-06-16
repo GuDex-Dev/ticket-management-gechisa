@@ -12,21 +12,26 @@ const config = {
   },
 };
 
-async function getPoolPromise() {
-  try {
-    const pool = await new sql.ConnectionPool(config).connect();
-    console.log("Conectado a SQL Server");
-    return pool;
-  } catch (err) {
-    console.error("Error de conexión a la base de datos:", err);
-    throw err;
+let poolPromise;
+
+async function getPool() {
+  if (!poolPromise) {
+    poolPromise = sql
+      .connect(config)
+      .then((pool) => {
+        console.log("Connected to SQL Server");
+        return pool;
+      })
+      .catch((err) => {
+        console.error("Database connection failed: ", err);
+        throw err;
+      });
   }
+  return poolPromise;
 }
 
-const poolPromise = getPoolPromise();
-
 async function executeProcedure(data, inputs, procedureName) {
-  const pool = await poolPromise;
+  const pool = await getPool();
   try {
     const request = pool.request();
     Object.keys(inputs).forEach((key) => {
@@ -35,13 +40,13 @@ async function executeProcedure(data, inputs, procedureName) {
     const result = await request.execute(procedureName);
     return result;
   } catch (error) {
-    console.error("Error executing stored procedure", error);
+    console.error(`Error executing stored procedure: ${procedureName}`, error);
     throw error; // re-throw the error to be handled in the calling code
   }
 }
 
 module.exports = {
   sql,
-  poolPromise,
   executeProcedure,
+  poolPromise: getPool(),
 };

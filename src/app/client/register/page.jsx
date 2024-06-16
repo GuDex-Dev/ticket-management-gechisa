@@ -21,6 +21,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -85,6 +87,9 @@ const formSchema = z
   });
 
 export function RegisterClientPage() {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
@@ -99,16 +104,35 @@ export function RegisterClientPage() {
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
       const json = await res.json();
-      console.log(json);
-      // Mensaje de éxito
+
+      if (res.ok) {
+        toast({
+          title: "Registro exitoso",
+          className: "bg-primary shadow-md text-primary-foreground font-bold",
+        });
+        form.reset();
+        router.push("/client/auth/login");
+      } else if (res.status === 400) {
+        toast({
+          title: "Error en el registro",
+          description: json.message,
+          variant: "destructive",
+        });
+      } else if (res.status === 500) {
+        toast({
+          title: "Error interno del servidor",
+          description: json.message,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Error during registration:", error);
-      // Mensaje de error al usuario
+      toast({
+        title: "Error durante el registro",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
