@@ -47,13 +47,22 @@ const authOptions = {
         }
 
         if (result.recordset[0].StatusCode === 0) {
-          return {
+          const user = {
             id: result.recordset[0][`ID_${credentials.role}`],
             name: result.recordset[0].first_name,
             email: result.recordset[0].email,
             phone: result.recordset[0].phone,
             role: credentials.role,
           };
+
+          if (credentials.role !== ROLES.CLIENT) {
+            user.city = {
+              id: result.recordset[0].city_id,
+              name: result.recordset[0].city_name,
+            };
+          }
+
+          return user;
         } else {
           throw new Error(result.recordset[0].ErrorMessage);
         }
@@ -65,12 +74,18 @@ const authOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        if (user.city) {
+          token.city = user.city;
+        }
       }
       return token;
     },
     session: async ({ session, token }) => {
       session.user.id = token.id;
       session.user.role = token.role;
+      if (token.city) {
+        session.user.city = token.city;
+      }
       return session;
     },
   },
