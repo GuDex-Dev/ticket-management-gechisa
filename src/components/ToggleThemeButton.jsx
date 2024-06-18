@@ -8,9 +8,9 @@ import { usePathname } from "next/navigation";
 
 function ToggleThemeButton({ className = "" }) {
   // * HOOKS
-  const { theme } = useTheme();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
+  const [themeApp, setThemeApp] = useState(null);
 
   // * FUNCTIONS
 
@@ -25,24 +25,30 @@ function ToggleThemeButton({ className = "" }) {
   function toggleTheme(isDark) {
     if (!isDark) {
       if (pathname.includes("client")) {
+        setThemeApp("blue-light");
         document.body.className = "blue-light";
       } else if (
         pathname.includes("administrator") ||
         pathname.includes("salesperson")
       ) {
+        setThemeApp("yellow-light");
         document.body.className = "yellow-light";
       } else {
+        setThemeApp("light");
         document.body.className = "light";
       }
     } else {
       if (pathname.includes("client")) {
+        setThemeApp("blue-dark");
         document.body.className = "blue-dark";
       } else if (
         pathname.includes("administrator") ||
         pathname.includes("salesperson")
       ) {
+        setThemeApp("yellow-dark");
         document.body.className = "yellow-dark";
       } else {
+        setThemeApp("dark");
         document.body.className = "dark";
       }
     }
@@ -63,7 +69,7 @@ function ToggleThemeButton({ className = "" }) {
       onClick={toggleDarkLight}
     >
       {isClient &&
-        (theme?.includes("dark") ? (
+        (themeApp.includes("dark") ? (
           <Moon className="absolute h-[1.2rem] w-[1.2rem] transition-all" />
         ) : (
           <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />

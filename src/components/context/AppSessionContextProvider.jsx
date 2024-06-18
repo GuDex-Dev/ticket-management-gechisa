@@ -1,9 +1,7 @@
 "use client";
 
 import { SessionProvider } from "next-auth/react";
-import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
-import { useEffect, createContext, useState, useContext } from "react";
+import { createContext, useState, useContext } from "react";
 
 const AppContext = createContext();
 export const useAppContext = () => useContext(AppContext);
