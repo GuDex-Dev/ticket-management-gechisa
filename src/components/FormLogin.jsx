@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/form";
 
 // * IMPORTS UTILS
-import { ROLES } from "@/constants";
+import { ROLES } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -86,8 +86,8 @@ export function FormLogin({ role = ROLES.CLIENT }) {
     } else {
       setError(null);
       toast({
-        title: "Inicio de sesión exitoso",
-        className: "bg-primary text-primary-foreground font-bold",
+        title: "ÉXITO",
+        description: "Inicio de sesión exitoso",
       });
     }
   };

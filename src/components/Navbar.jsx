@@ -3,12 +3,14 @@ import ToggleThemeButton from "@/components/ToggleThemeButton";
 import Link from "next/link";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { ROLES } from "@/constants";
+import { ROLES } from "@/lib/utils";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
+import { useAppContext } from "./context/AppSessionContextProvider";
 
 function Navbar({ role }) {
   const { data } = useSession();
+  const { navbarOptions } = useAppContext();
 
   if (!role) {
     return "Rol no asignado";
@@ -50,21 +52,16 @@ function Navbar({ role }) {
             </>
           ) : (
             <>
-              {role === ROLES.ADMINISTRATOR ? (
+              {navbarOptions?.options?.map((option, i) => (
                 <Link
-                  href={`/${role.toLowerCase()}/dashboard/create-trip`}
+                  key={i}
+                  href={option.href}
                   className={navigationMenuTriggerStyle()}
                 >
-                  Crear Viaje
+                  {option.title}
                 </Link>
-              ) : role === ROLES.SALESPERSON ? (
-                <Link
-                  href={`/${role.toLowerCase()}/dashboard/sell-ticket`}
-                  className={navigationMenuTriggerStyle()}
-                >
-                  Vender Boleto
-                </Link>
-              ) : null}
+              ))}
+
               <Button
                 className="ml-4"
                 variant="destructive"
@@ -94,7 +91,7 @@ function Navbar({ role }) {
   );
 }
 
-const navigationMenuTriggerStyle = cva(
+export const navigationMenuTriggerStyle = cva(
   "group inline-flex h-16 w-max items-center justify-center rounded-none bg-primary text-primary-foreground px-4 py-2 transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
 );
 

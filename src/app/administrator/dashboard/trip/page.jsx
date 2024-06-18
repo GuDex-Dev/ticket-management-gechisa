@@ -4,22 +4,25 @@ import { useAppContext } from "@/components/context/AppSessionContextProvider";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-function DashboardAdministratorPage() {
+function TripAdministratorPage() {
+  const { setNavbarOptions } = useAppContext();
   const session = useSession();
   const pathname = usePathname();
-  const { setNavbarOptions } = useAppContext();
+
   useEffect(() => {
     setNavbarOptions({
       pathname: pathname,
-      options: [{ href: "/administrator/dashboard/trip", title: "Viajes" }],
+      options: [
+        { href: "/administrator/dashboard/trip/create", title: "Crear Viaje" },
+      ],
     });
   }, [session]);
 
   return (
     <>
-      <div>DashboardAdministratorPage</div>
+      <div>TripAdministratorPage</div>
     </>
   );
 }
 
-export default DashboardAdministratorPage;
+export default TripAdministratorPage;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const db = require("@/db");
+const db = require("@/lib/db");
 
 export async function POST(req, res) {
   try {

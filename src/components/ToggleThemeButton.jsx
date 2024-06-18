@@ -3,12 +3,12 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "./context/AppSessionContextProvider";
+import { useEffect, useState } from "react";
+import { useAppContext } from "./context/AppSessionContextProvider";
 
 function ToggleThemeButton({ className = "" }) {
   const { theme } = useTheme();
-  const { toggleTheme } = useContext(AppContext);
+  const { toggleTheme } = useAppContext();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {

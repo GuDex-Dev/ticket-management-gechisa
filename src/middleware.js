@@ -1,6 +1,6 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import { ROLES } from "@/constants";
+import { ROLES } from "@/lib/utils";
 
 export default withAuth(
   function middleware(req) {
@@ -47,6 +47,14 @@ export default withAuth(
       const url = req.nextUrl.clone();
       url.pathname = "/administrator/auth/login";
       return NextResponse.redirect(url);
+    }
+
+    // ! Protección de rutas API para administradores
+    if (
+      pathname.startsWith("/api/administrator") &&
+      role !== ROLES.ADMINISTRATOR
+    ) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     return NextResponse.next();

@@ -3,11 +3,13 @@
 import { SessionProvider } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
-import { useEffect, createContext } from "react";
+import { useEffect, createContext, useState, useContext } from "react";
 
-export const AppContext = createContext();
+const AppContext = createContext();
+export const useAppContext = () => useContext(AppContext);
 
 export default function AppSessionContextProvider({ children, session }) {
+  const [navbarOptions, setNavbarOptions] = useState(null);
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
 
@@ -22,6 +24,9 @@ export default function AppSessionContextProvider({ children, session }) {
   useEffect(() => {
     const isDark = theme.includes("dark") || theme === undefined;
     toggleTheme(isDark);
+    if (pathname !== navbarOptions?.pathname) {
+      setNavbarOptions(null);
+    }
   }, [pathname]);
 
   useEffect(() => {
@@ -31,7 +36,9 @@ export default function AppSessionContextProvider({ children, session }) {
   }, [theme]);
 
   return (
-    <AppContext.Provider value={{ toggleTheme }}>
+    <AppContext.Provider
+      value={{ toggleTheme, navbarOptions, setNavbarOptions }}
+    >
       <SessionProvider session={session}>{children}</SessionProvider>
     </AppContext.Provider>
   );

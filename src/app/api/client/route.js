@@ -1,5 +1,5 @@
 const { NextResponse } = require("next/server");
-const { poolPromise } = require("@/db");
+const { poolPromise } = require("@/lib/db");
 
 export async function GET(req, res) {
   const pool = await poolPromise;

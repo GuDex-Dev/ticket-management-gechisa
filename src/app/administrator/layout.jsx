@@ -1,5 +1,6 @@
+import Loading from "@/components/Loading";
 import Navbar from "@/components/Navbar";
-import { ROLES } from "@/constants";
+import { ROLES } from "@/lib/utils";
 
 export const metadata = {
   title: "ADMIN - Gechisa - Boletería",
