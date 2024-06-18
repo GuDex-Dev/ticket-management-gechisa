@@ -8,11 +8,16 @@ import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import { useAppContext } from "./context/AppSessionContextProvider";
 import { H1 } from "./ui/typography";
-import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 function Navbar({ role }) {
   const { data } = useSession();
   const { navbarOptions } = useAppContext();
+  const [isYellow, setIsYellow] = useState(false);
+
+  useEffect(() => {
+    setIsYellow(role === ROLES.ADMINISTRATOR || role === ROLES.SALESPERSON);
+  }, [role]);
 
   if (!role) {
     return "Rol no asignado";
@@ -20,11 +25,10 @@ function Navbar({ role }) {
 
   const navigationMenuTriggerStyle = cva(
     `group inline-flex h-16 w-max items-center justify-center rounded-none bg-primary text-primary-foreground px-4 py-2 transition-colors ${
-      useTheme().theme.includes("yellow")
-        ? "hover:text-sky-700"
-        : "hover:text-yellow-400"
+      isYellow ? "hover:text-sky-700" : "hover:text-yellow-400"
     } disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50`
   );
+
   return (
     <header className="bg-primary shadow-md">
       <nav className="container h-16 mx-auto flex items-center text-lg font-bold ">

@@ -4,31 +4,63 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useAppContext } from "./context/AppSessionContextProvider";
+import { usePathname } from "next/navigation";
 
 function ToggleThemeButton({ className = "" }) {
+  // * HOOKS
   const { theme } = useTheme();
-  const { toggleTheme } = useAppContext();
+  const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // * FUNCTIONS
 
-  function handleClickButton() {
-    if (theme.includes("dark")) {
+  function toggleDarkLight() {
+    if (document.body.className.includes("dark")) {
       toggleTheme(false);
     } else {
       toggleTheme(true);
     }
   }
 
+  function toggleTheme(isDark) {
+    if (!isDark) {
+      if (pathname.includes("client")) {
+        document.body.className = "blue-light";
+      } else if (
+        pathname.includes("administrator") ||
+        pathname.includes("salesperson")
+      ) {
+        document.body.className = "yellow-light";
+      } else {
+        document.body.className = "light";
+      }
+    } else {
+      if (pathname.includes("client")) {
+        document.body.className = "blue-dark";
+      } else if (
+        pathname.includes("administrator") ||
+        pathname.includes("salesperson")
+      ) {
+        document.body.className = "yellow-dark";
+      } else {
+        document.body.className = "dark";
+      }
+    }
+  }
+
+  // * EFFECTS
+
+  useEffect(() => {
+    setIsClient(true);
+    toggleTheme(document.body.className.includes("dark"));
+  }, []);
+
   return (
     <Button
       className={className}
       variant="outline"
       size="icon"
-      onClick={handleClickButton}
+      onClick={toggleDarkLight}
     >
       {isClient &&
         (theme?.includes("dark") ? (
