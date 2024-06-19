@@ -18,7 +18,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
 import {
   Card,
   CardContent,
@@ -29,6 +28,8 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAppContext } from "@/components/context/AppSessionContextProvider";
+import { usePathname } from "next/navigation";
 
 // * FORM VALIDATION
 const formSchema = z.object({
@@ -64,15 +65,14 @@ async function getInitialData() {
 function CreateTripPage() {
   // * HOOKS
   const { data } = useSession();
-  console.log(data);
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
   const { toast } = useToast();
   const router = useRouter();
+  const { themeApp } = useAppContext();
 
   // * VARIABLES
-  const [isLightTheme, setIsLightTheme] = useState(false);
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const loadOptions = async (inputValue, callback) => {
     if (sessionLoaded) {
@@ -85,7 +85,7 @@ function CreateTripPage() {
   const selectStyles = {
     control: (baseStyles, state) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         display: "flex",
@@ -110,7 +110,7 @@ function CreateTripPage() {
     },
     menu: (baseStyles) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         backgroundColor: isLightTheme ? "#ffffff" : "#374151", // card background color
@@ -122,7 +122,7 @@ function CreateTripPage() {
     },
     option: (baseStyles, state) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         cursor: "pointer", // cursor-pointer
@@ -152,7 +152,7 @@ function CreateTripPage() {
     },
     placeholder: (baseStyles) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         color: isLightTheme ? "#6b7280" : "#9ca3af", // muted foreground color
@@ -160,7 +160,7 @@ function CreateTripPage() {
     },
     singleValue: (baseStyles) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         color: isLightTheme ? "#111827" : "#e5e7eb", // foreground color
@@ -168,7 +168,7 @@ function CreateTripPage() {
     },
     multiValue: (baseStyles) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         backgroundColor: isLightTheme ? "#e5e7eb" : "#4b5563", // secondary background color
@@ -179,7 +179,7 @@ function CreateTripPage() {
     },
     multiValueLabel: (baseStyles) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         color: isLightTheme ? "#374151" : "#d1d5db", // secondary foreground color
@@ -187,7 +187,7 @@ function CreateTripPage() {
     },
     multiValueRemove: (baseStyles) => {
       const isLightTheme = document.body.className.includes("light");
-  
+
       return {
         ...baseStyles,
         color: isLightTheme ? "#374151" : "#d1d5db", // secondary foreground color
@@ -274,7 +274,5 @@ function CreateTripPage() {
     </Card>
   );
 }
-
-
 
 export default CreateTripPage;
