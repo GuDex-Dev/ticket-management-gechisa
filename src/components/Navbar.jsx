@@ -8,16 +8,12 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 
 // * IMPORTS UTILS
 import { signOut, useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAppContext } from "./context/AppSessionContextProvider";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -26,12 +22,7 @@ import { ROLES } from "@/lib/utils";
 function Navbar({ role }) {
   const { data } = useSession();
   const { navbarOptions } = useAppContext();
-  const [isYellow, setIsYellow] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setIsYellow(role === ROLES.ADMINISTRATOR || role === ROLES.SALESPERSON);
-  }, [role]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -41,19 +32,46 @@ function Navbar({ role }) {
     return "Rol no asignado";
   }
 
-  const navigationMenuTriggerStyle = cva(
-    `group inline-flex h-14 w-max items-center justify-center rounded-none bg-primary text-primary-foreground px-4 py-2 transition-colors ${
-      isYellow ? "hover:text-sky-700" : "hover:text-yellow-400"
-    } disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50`,
+  const sidebarOptionsVariants = cva(
+    "group inline-flex h-14 w-max items-center justify-center rounded-none transition-colors disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 font-semibold",
+    {
+      variants: {
+        role: {
+          CLIENT: `hover:text-yellow-500 text-yellow-500 decoration-yellow-500`,
+          NOCLIENT: `hover:text-sky-600 text-sky-600 decoration-sky-600`,
+        },
+        type: {
+          title: `w-full text-center text-3xl`,
+          subtitle: `text-foreground hover:underline`,
+        },
+      },
+      defaultVariants: {
+        type: "subtitle",
+      },
+    },
+  );
+
+  const navbarOptionsVariants = cva(
+    `group inline-flex h-14 w-max items-center justify-center rounded-none bg-primary text-primary-foreground px-4 py-2 transition-colors disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50`,
+    {
+      variants: {
+        role: {
+          CLIENT: `hover:text-yellow-500 decoration-yellow-500`,
+          NOCLIENT: `hover:text-sky-600 decoration-sky-600`,
+        },
+      },
+    },
   );
 
   return (
     <header className="bg-primary shadow-md">
-      <nav className="container mx-auto flex h-14 items-center justify-between px-4 text-lg font-bold sm:px-6 lg:px-8">
+      <nav className="container mx-auto flex h-14 items-center justify-between px-4 font-bold sm:px-6 lg:px-8">
         <H1>
           <Link
             href={`/${role.toLowerCase()}/dashboard`}
-            className={cn(navigationMenuTriggerStyle())}
+            className={navbarOptionsVariants({
+              role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+            })}
           >
             GECHISA
             {role === ROLES.ADMINISTRATOR
@@ -66,21 +84,25 @@ function Navbar({ role }) {
           </Link>
         </H1>
         <div className="flex items-center space-x-4">
-          <div className="hidden space-x-4 md:flex">
+          <div className="hidden items-center space-x-4 text-lg md:flex">
             {data?.user?.role !== role ? (
               <>
                 <Link
                   href={`/${role.toLowerCase()}/auth/login`}
-                  className={navigationMenuTriggerStyle()}
+                  className={navbarOptionsVariants({
+                    role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                  })}
                 >
-                  Inicia Sesión
+                  Iniciar Sesión
                 </Link>
                 {role === ROLES.CLIENT && (
                   <Link
                     href={`/client/register`}
-                    className={navigationMenuTriggerStyle()}
+                    className={navbarOptionsVariants({
+                      role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                    })}
                   >
-                    Regístrate
+                    Registrarme
                   </Link>
                 )}
               </>
@@ -90,7 +112,9 @@ function Navbar({ role }) {
                   <Link
                     key={i}
                     href={option.href}
-                    className={navigationMenuTriggerStyle()}
+                    className={navbarOptionsVariants({
+                      role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                    })}
                   >
                     {option.title}
                   </Link>
@@ -142,43 +166,57 @@ function Navbar({ role }) {
                 </svg>
               </Button>
             </SheetTrigger>
-            <SheetContent>
-              <div className="grid gap-4 py-4">
+            <SheetContent className="rounded- w-3/5">
+              <div className="flex w-full flex-col justify-start">
                 <H1>
                   <SheetClose asChild>
                     <Link
                       href={`/${role.toLowerCase()}/dashboard`}
-                      className={cn(navigationMenuTriggerStyle(), "text-xl")}
+                      className={cn(
+                        sidebarOptionsVariants({
+                          role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                          type: "title",
+                        }),
+                      )}
                     >
-                      GECHISA
                       {role === ROLES.ADMINISTRATOR
-                        ? " - ADMINISTRADOR"
+                        ? "ADMINISTRADOR"
                         : role === ROLES.CLIENT
-                          ? ""
+                          ? "CLIENTE"
                           : role === ROLES.SALESPERSON
-                            ? " - VENDEDOR"
+                            ? "VENDEDOR"
                             : ""}
                     </Link>
                   </SheetClose>
                 </H1>
-                <div className="flex flex-col space-y-4">
+                <div className="flex min-w-full flex-col justify-start text-base">
                   {data?.user?.role !== role ? (
                     <>
                       <SheetClose asChild>
                         <Link
                           href={`/${role.toLowerCase()}/auth/login`}
-                          className={navigationMenuTriggerStyle()}
+                          className={cn(
+                            sidebarOptionsVariants({
+                              role:
+                                role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                            }),
+                          )}
                         >
-                          Inicia Sesión
+                          Iniciar Sesión
                         </Link>
                       </SheetClose>
                       {role === ROLES.CLIENT && (
                         <SheetClose asChild>
                           <Link
                             href={`/client/register`}
-                            className={navigationMenuTriggerStyle()}
+                            className={cn(
+                              sidebarOptionsVariants({
+                                role:
+                                  role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                              }),
+                            )}
                           >
-                            Regístrate
+                            Registrarme
                           </Link>
                         </SheetClose>
                       )}
@@ -190,15 +228,26 @@ function Navbar({ role }) {
                           <Link
                             key={i}
                             href={option.href}
-                            className={navigationMenuTriggerStyle()}
+                            className={cn(
+                              sidebarOptionsVariants({
+                                role:
+                                  role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                              }),
+                            )}
                           >
                             {option.title}
                           </Link>
                         </SheetClose>
                       ))}
 
+                      <div className="my-4 flex items-center justify-center">
+                        <hr className="mx-4 w-full border-t border-gray-500" />
+                        <span className="mx-2 text-lg text-gray-500">O</span>
+                        <hr className="mx-4 w-full border-t border-gray-500" />
+                      </div>
+
                       <Button
-                        className="ml-4"
+                        className="mx-4"
                         variant="destructive"
                         onClick={() => signOut()}
                       >

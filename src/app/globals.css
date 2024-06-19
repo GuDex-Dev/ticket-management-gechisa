@@ -117,7 +117,8 @@
   --ring: 35.5 91.7% 32.9%;
 }
 
-.blue-light {--background: 0 0% 100%;
+.blue-light {
+  --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;
