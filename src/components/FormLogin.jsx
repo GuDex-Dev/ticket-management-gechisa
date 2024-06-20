@@ -31,6 +31,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+// * FORM VALIDATION
 const formSchema = z.object({
   dni: z
     .string({
@@ -45,6 +46,8 @@ const formSchema = z.object({
     .min(1, "La contraseña es obligatoria")
     .max(50, "La contraseña no puede tener más de 50 caracteres"),
 });
+
+// ! COMPONENT
 export function FormLogin({ role = ROLES.CLIENT }) {
   // * HOOKS
   const { data: session, status } = useSession();

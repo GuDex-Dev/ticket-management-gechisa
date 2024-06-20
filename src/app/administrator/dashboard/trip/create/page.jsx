@@ -56,32 +56,21 @@ const formSchema = z.object({
 });
 
 // * FETCH DATA
-async function getInitialData() {
-  const res = await fetch(
-    "http://localhost:3000/api/administrator/create-trip/init",
-  );
-}
+// async function fetchGetOptions() {
 
+  
+
+
+// ! MAIN COMPONENT
 function CreateTripPage() {
   // * HOOKS
+  useAppContext();
   const { data } = useSession();
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
-  const { toast } = useToast();
-  const router = useRouter();
-  const { themeApp } = useAppContext();
 
   // * VARIABLES
-  const [sessionLoaded, setSessionLoaded] = useState(false);
-  const loadOptions = async (inputValue, callback) => {
-    if (sessionLoaded) {
-      // Aquí podrías hacer una llamada a la API para obtener las opciones dinámicamente
-      callback([{ value: 1, label: "Lima" }]);
-    } else {
-      callback([{ value: 1, label: "Cargando..." }]);
-    }
-  };
   const selectStyles = {
     control: (baseStyles, state) => {
       const isLightTheme = document.body.className.includes("light");
@@ -106,6 +95,12 @@ function CreateTripPage() {
         "&:hover": {
           borderColor: isLightTheme ? "#fbbf24" : "#f59e0b", // hover border color
         },
+        ...(state.isDisabled && {
+          backgroundColor: isLightTheme ? "#f9fafb" : "#374151",
+          borderColor: isLightTheme ? "#e5e7eb" : "#4b5563",
+          cursor: "not-allowed",
+          opacity: "0.6",
+        }),
       };
     },
     menu: (baseStyles) => {
@@ -203,17 +198,18 @@ function CreateTripPage() {
   };
 
   // * FUNCTIONS
-  useEffect(() => {
-    if (data) {
-      setSessionLoaded(true);
-    }
-  }, [data]);
+  const loadOptions = {
+    origin_city_id: (inputValue, callback) => {
+      callback([
+        {
+          value: data.user?.city?.id,
+          label: data.user?.city?.name,
+        },
+      ]);
+    },
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+
+  };
 
   return (
     <Card className="mx-auto min-w-[calc(35vw)] max-w-max">
@@ -226,7 +222,7 @@ function CreateTripPage() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit()} className="space-y-8">
             <FormField
               control={form.control}
               name="origin_city_id"
@@ -239,8 +235,13 @@ function CreateTripPage() {
                       onChange={(value) =>
                         form.setValue("origin_city_id", value.value)
                       }
-                      loadOptions={loadOptions}
-                      defaultOptions={true}
+                      loadOptions={loadOptions.origin_city_id}
+                      defaultOptions
+                      defaultValue={{
+                        value: data.user?.city?.id,
+                        label: data.user?.city?.name,
+                      }}
+                      isDisabled
                     />
                   </FormControl>
                   <FormMessage />

@@ -167,7 +167,7 @@ function Navbar({ role }) {
               </Button>
             </SheetTrigger>
             <SheetContent className="rounded- w-3/5">
-              <div className="flex h-full w-full flex-col justify-between">
+              <div className="flex h-full w-full flex-col justify-between mt-4">
                 <H1>
                   <SheetClose asChild>
                     <Link

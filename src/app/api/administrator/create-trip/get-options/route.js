@@ -23,10 +23,10 @@ export async function POST(req, res) {
     });
 
     const INPUTS = {
-      ID_origin_city: "city_id",
+      ID_origin_city: "origin_city_id",
     };
 
-    const PROCEDURE_NAME = "spAdministrator_CreateTrip_Init";
+    const PROCEDURE_NAME = "spAdministrator_CreateTrip_GetOptions";
 
     const result = await db.executeProcedure(data, INPUTS, PROCEDURE_NAME);
 
