@@ -12,7 +12,7 @@ export async function POST(req, res) {
           ok: false,
           message: "Invalid data",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -42,9 +42,10 @@ export async function POST(req, res) {
         return NextResponse.json(
           {
             ok: false,
-            message: `Error ${ErrorNumber}: ${ErrorMessage}`,
+            number: ErrorNumber,
+            message: ErrorMessage,
           },
-          { status: 400 }
+          { status: 400 },
         );
       } else {
         return NextResponse.json(
@@ -52,7 +53,7 @@ export async function POST(req, res) {
             ok: true,
             message: "Registro exitoso",
           },
-          { status: 200 }
+          { status: 200 },
         );
       }
     }
@@ -62,17 +63,16 @@ export async function POST(req, res) {
         ok: false,
         message: "Unexpected error occurred",
       },
-      { status: 500 }
+      { status: 500 },
     );
   } catch (error) {
     console.error(`Error executing ${PROCEDURE_NAME}:`, error);
     return NextResponse.json(
       {
         ok: false,
-        message: "An error occurred during registration.",
-        details: error.message,
+        message: error,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

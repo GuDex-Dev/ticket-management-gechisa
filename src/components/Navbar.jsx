@@ -167,7 +167,7 @@ function Navbar({ role }) {
               </Button>
             </SheetTrigger>
             <SheetContent className="rounded- w-3/5">
-              <div className="flex h-full w-full flex-col justify-between mt-4">
+              <div className="mt-4 flex h-full w-full flex-col justify-between">
                 <H1>
                   <SheetClose asChild>
                     <Link
@@ -249,9 +249,8 @@ function Navbar({ role }) {
                       <span className="mx-2 text-lg text-gray-500">O</span>
                       <hr className="mx-4 w-full border-t border-gray-500" />
                     </div>
-
                     <Button
-                      className="mx-4"
+                      className="mx-4 mb-6"
                       variant="destructive"
                       onClick={() => signOut()}
                     >
@@ -273,7 +272,6 @@ function Navbar({ role }) {
                   </div>
                 )}
               </div>
-              <SheetClose asChild></SheetClose>
             </SheetContent>
           </Sheet>
         </div>

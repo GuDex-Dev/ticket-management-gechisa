@@ -74,7 +74,7 @@ const formSchema = z
       .min(1, "La confirmación de contraseña es obligatoria")
       .max(
         50,
-        "La confirmación de contraseña no puede tener más de 50 caracteres"
+        "La confirmación de contraseña no puede tener más de 50 caracteres",
       ),
   })
   .refine((data) => data.email || data.phone, {
@@ -91,6 +91,27 @@ const formSchema = z
   });
 
 // * FETCH API
+async function apiRegisterClient(data) {
+  try {
+    const res = await fetch("/api/client/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json.message);
+    }
+
+    return json;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
 
 export function RegisterClientPage() {
   // * HOOKS
@@ -103,36 +124,14 @@ export function RegisterClientPage() {
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch("/api/client/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const json = await apiRegisterClient(data);
+
+      toast({
+        title: json.message,
+        className: "bg-primary shadow-md text-primary-foreground font-bold",
       });
-
-      const json = await res.json();
-
-      if (res.ok) {
-        toast({
-          title: "Registro exitoso",
-          className: "bg-primary shadow-md text-primary-foreground font-bold",
-        });
-        form.reset();
-        router.push("/client/auth/login");
-      } else if (res.status === 400) {
-        toast({
-          title: "Error en el registro",
-          description: json.message,
-          variant: "destructive",
-        });
-      } else if (res.status === 500) {
-        toast({
-          title: "Error interno del servidor",
-          description: json.message,
-          variant: "destructive",
-        });
-      }
+      form.reset();
+      router.push("/client/auth/login");
     } catch (error) {
       console.error("Error during registration:", error);
       toast({
@@ -144,11 +143,11 @@ export function RegisterClientPage() {
   };
 
   return (
-    <Card className="max-w-max mx-auto min-w-[calc(35vw)]">
+    <Card className="mx-auto min-w-[calc(35vw)] max-w-max">
       <CardHeader>
         <CardTitle>Regístrate</CardTitle>
         <CardDescription>
-          Los campos con <span className="text-red-500 text-xs">(*)</span> son
+          Los campos con <span className="text-xs text-red-500">(*)</span> son
           obligatorios
         </CardDescription>
       </CardHeader>
@@ -164,7 +163,7 @@ export function RegisterClientPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    DNI <span className="text-red-500 text-xs">(*)</span>
+                    DNI <span className="text-xs text-red-500">(*)</span>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="00000001" {...field} />
@@ -180,7 +179,7 @@ export function RegisterClientPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Nombre <span className="text-red-500 text-xs">(*)</span>
+                    Nombre <span className="text-xs text-red-500">(*)</span>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="Nombre" {...field} />
@@ -195,7 +194,7 @@ export function RegisterClientPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Apellidos <span className="text-red-500 text-xs">(*)</span>
+                    Apellidos <span className="text-xs text-red-500">(*)</span>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="Apellido" {...field} />
@@ -253,7 +252,7 @@ export function RegisterClientPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Contraseña <span className="text-red-500 text-xs">(*)</span>
+                    Contraseña <span className="text-xs text-red-500">(*)</span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -273,7 +272,7 @@ export function RegisterClientPage() {
                 <FormItem>
                   <FormLabel>
                     Confirmar contraseña{" "}
-                    <span className="text-red-500 text-xs">(*)</span>
+                    <span className="text-xs text-red-500">(*)</span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -287,7 +286,7 @@ export function RegisterClientPage() {
               )}
             />
 
-            <div className="col-span-1 md:col-span-2 flex flex-col space-y-4 items-center">
+            <div className="col-span-1 flex flex-col items-center space-y-4 md:col-span-2">
               <CardDescription>
                 Ya tienes una cuenta?{" "}
                 <Link href="/client/auth/login" className="text-blue-500">

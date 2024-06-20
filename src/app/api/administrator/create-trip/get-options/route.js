@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { number } from "zod";
 
 const db = require("@/lib/db");
 
@@ -12,7 +13,7 @@ export async function POST(req, res) {
           ok: false,
           message: "Invalid data",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -36,9 +37,10 @@ export async function POST(req, res) {
         return NextResponse.json(
           {
             ok: false,
-            message: `Error ${ErrorNumber}: ${ErrorMessage}`,
+            number: ErrorNumber,
+            message: ErrorMessage,
           },
-          { status: 400 }
+          { status: 400 },
         );
       } else {
         const destination_city = result.recordsets[0].map((data) => ({
@@ -66,7 +68,7 @@ export async function POST(req, res) {
               driver,
             },
           },
-          { status: 200 }
+          { status: 200 },
         );
       }
     }
@@ -76,17 +78,16 @@ export async function POST(req, res) {
         ok: false,
         message: "Unexpected error occurred",
       },
-      { status: 500 }
+      { status: 500 },
     );
   } catch (error) {
     console.error(`Error executing ${PROCEDURE_NAME}:`, error);
     return NextResponse.json(
       {
         ok: false,
-        message: "An error occurred during trip initialization.",
-        details: error.message,
+        message: error,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
