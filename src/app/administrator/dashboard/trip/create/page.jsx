@@ -56,16 +56,33 @@ const formSchema = z.object({
 });
 
 // * FETCH DATA
-// async function fetchGetOptions() {
+async function apiGetOptions(origin_city_id) {
+  try {
+    const res = await fetch("/api/administrator/create-trip/get-options", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ origin_city_id }),
+    });
 
-  
+    const json = await res.json();
 
+    if (!res.ok) {
+      throw new Error(json.message);
+    }
+
+    return json;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
 
 // ! MAIN COMPONENT
 function CreateTripPage() {
   // * HOOKS
   useAppContext();
-  const { data } = useSession();
+  const { data: sessionData } = useSession();
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
@@ -103,6 +120,14 @@ function CreateTripPage() {
         }),
       };
     },
+    input: (baseStyles) => {
+      const isLightTheme = document.body.className.includes("light");
+
+      return {
+        ...baseStyles,
+        color: isLightTheme ? "#111827" : "#fbbf24", // foreground color
+      };
+    },
     menu: (baseStyles) => {
       const isLightTheme = document.body.className.includes("light");
 
@@ -122,6 +147,8 @@ function CreateTripPage() {
         ...baseStyles,
         cursor: "pointer", // cursor-pointer
         padding: "0.2rem 0.5rem", // padding
+        fontFamily: "monospace",
+        fontSize: "1rem",
         backgroundColor: state.isSelected
           ? isLightTheme
             ? "#fbbf24" // primary color for selected option
@@ -196,20 +223,62 @@ function CreateTripPage() {
       };
     },
   };
+  const [options, setOptions] = useState(null);
 
   // * FUNCTIONS
-  const loadOptions = {
-    origin_city_id: (inputValue, callback) => {
-      callback([
-        {
-          value: data.user?.city?.id,
-          label: data.user?.city?.name,
-        },
-      ]);
-    },
+  useEffect(() => {
+    const loadOptions = async () => {
+      try {
+        const origin_city_id = sessionData?.user?.city?.id;
+        if (!origin_city_id) return;
 
+        const result = await apiGetOptions(origin_city_id);
+        const formattedOptions = {
+          destination_city: result.data.destination_city.map((city) => ({
+            value: city.id,
+            label: city.name,
+          })),
+          bus: result.data.bus.map((bus) => ({
+            value: bus.placa,
+            label: `${bus.placa} - ${bus.seats_count} asientos`,
+          })),
+          driver: result.data.driver.map((driver) => ({
+            value: driver.id,
+            label: `${driver.id} - ${driver.last_name}`,
+          })),
+        };
+        setOptions(formattedOptions);
+      } catch (error) {
+        console.error("Error loading options:", error);
+      }
+    };
 
+    loadOptions();
+  }, [sessionData]);
+
+  const loadDestinationCityOptions = (inputValue, callback) => {
+    const filteredOptions = options.destination_city.filter((option) =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    console.log(filteredOptions);
+    callback(filteredOptions);
   };
+
+  const loadBusOptions = (inputValue, callback) => {
+    const filteredOptions = options.bus.filter((option) =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    callback(filteredOptions);
+  };
+
+  const loadDriverOptions = (inputValue, callback) => {
+    const filteredOptions = options.driver.filter((option) =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    callback(filteredOptions);
+  };
+
+  if (!options) return null;
 
   return (
     <Card className="mx-auto min-w-[calc(35vw)] max-w-max">
@@ -235,11 +304,9 @@ function CreateTripPage() {
                       onChange={(value) =>
                         form.setValue("origin_city_id", value.value)
                       }
-                      loadOptions={loadOptions.origin_city_id}
-                      defaultOptions
                       defaultValue={{
-                        value: data.user?.city?.id,
-                        label: data.user?.city?.name,
+                        value: sessionData.user?.city?.id,
+                        label: sessionData.user?.city?.name,
                       }}
                       isDisabled
                     />
@@ -260,6 +327,50 @@ function CreateTripPage() {
                       onChange={(value) =>
                         form.setValue("destination_city_id", value.value)
                       }
+                      loadOptions={loadDestinationCityOptions}
+                      defaultOptions
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="bus_id"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Bus</FormLabel>
+                  <FormControl>
+                    <AsyncSelect
+                      styles={selectStyles}
+                      onChange={(value) => form.setValue("bus_id", value.value)}
+                      loadOptions={loadBusOptions}
+                      defaultOptions
+                      maxMenuHeight={200}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="driver_id"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Conductor</FormLabel>
+                  <FormControl>
+                    <AsyncSelect
+                      styles={selectStyles}
+                      onChange={(value) =>
+                        form.setValue("driver_id", value.value)
+                      }
+                      loadOptions={loadDriverOptions}
+                      defaultOptions
+                      maxMenuHeight={200}
                     />
                   </FormControl>
                   <FormMessage />
