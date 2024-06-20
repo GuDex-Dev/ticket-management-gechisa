@@ -10,27 +10,25 @@ function ToggleThemeButton({ className = "" }) {
   // * HOOKS
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
-  const { themeApp, toggleTheme } = useAppContext();
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const { getActualTheme, toggleDarkTheme, initializeTheme } = useAppContext();
 
   // * FUNCTIONS
 
   function toggleDarkLight() {
-    const isCurrentlyDark = document.body.className.includes("dark");
-    toggleTheme(pathname, document, !isCurrentlyDark);
+    toggleDarkTheme(pathname, document);
   }
 
   // * EFFECTS
 
   useEffect(() => {
+    initializeTheme(pathname, document);
     setIsClient(true);
-    const isCurrentlyDark = document.body.className.includes("dark");
-    toggleTheme(pathname, document, isCurrentlyDark);
   }, [pathname]);
 
-  const currentTheme = themeApp.find((theme) => theme.id === pathname);
-  const isDarkTheme = currentTheme
-    ? currentTheme.theme.includes("dark")
-    : document.body.className.includes("dark");
+  useEffect(() => {
+    setIsDarkTheme(getActualTheme(pathname).includes("dark"));
+  }, [toggleDarkLight, pathname]);
 
   return (
     <Button

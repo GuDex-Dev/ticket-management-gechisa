@@ -97,7 +97,7 @@ export function FormLogin({ role = ROLES.CLIENT }) {
       {error && <AlertError message={error} />}
       <Card className="w-[350px] mx-auto">
         <CardHeader>
-          <CardTitle>Inicia Sesión</CardTitle>
+          <CardTitle>Iniciar Sesión</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>

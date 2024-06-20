@@ -42,7 +42,7 @@ function Navbar({ role }) {
         },
         type: {
           title: `w-full text-center text-3xl`,
-          subtitle: `text-foreground hover:underline`,
+          subtitle: `text-foreground hover:underline text-lg`,
         },
       },
       defaultVariants: {
@@ -102,7 +102,7 @@ function Navbar({ role }) {
                       role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
                     })}
                   >
-                    Registrarme
+                    Regístrate
                   </Link>
                 )}
               </>
@@ -167,7 +167,7 @@ function Navbar({ role }) {
               </Button>
             </SheetTrigger>
             <SheetContent className="rounded- w-3/5">
-              <div className="flex w-full flex-col justify-start">
+              <div className="flex h-full w-full flex-col justify-between">
                 <H1>
                   <SheetClose asChild>
                     <Link
@@ -189,7 +189,7 @@ function Navbar({ role }) {
                     </Link>
                   </SheetClose>
                 </H1>
-                <div className="flex min-w-full flex-col justify-start text-base">
+                <div className="flex h-full w-full flex-col justify-start">
                   {data?.user?.role !== role ? (
                     <>
                       <SheetClose asChild>
@@ -216,7 +216,7 @@ function Navbar({ role }) {
                               }),
                             )}
                           >
-                            Registrarme
+                            Regístrate
                           </Link>
                         </SheetClose>
                       )}
@@ -239,36 +239,39 @@ function Navbar({ role }) {
                           </Link>
                         </SheetClose>
                       ))}
-
-                      <div className="my-4 flex items-center justify-center">
-                        <hr className="mx-4 w-full border-t border-gray-500" />
-                        <span className="mx-2 text-lg text-gray-500">O</span>
-                        <hr className="mx-4 w-full border-t border-gray-500" />
-                      </div>
-
-                      <Button
-                        className="mx-4"
-                        variant="destructive"
-                        onClick={() => signOut()}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-                          />
-                        </svg>
-                      </Button>
                     </>
                   )}
                 </div>
+                {data?.user?.role === role && (
+                  <div className="flex h-full w-full flex-col justify-end">
+                    <div className="my-4 flex items-center justify-center">
+                      <hr className="mx-4 w-full border-t border-gray-500" />
+                      <span className="mx-2 text-lg text-gray-500">O</span>
+                      <hr className="mx-4 w-full border-t border-gray-500" />
+                    </div>
+
+                    <Button
+                      className="mx-4"
+                      variant="destructive"
+                      onClick={() => signOut()}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                        />
+                      </svg>
+                    </Button>
+                  </div>
+                )}
               </div>
               <SheetClose asChild></SheetClose>
             </SheetContent>
