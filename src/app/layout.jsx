@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/context/ThemeProvider";
 import AppSessionContextProvider from "@/components/context/AppSessionContextProvider";
 import { Toaster } from "@/components/ui/toaster";
 import Loading from "@/components/Loading";
@@ -16,17 +15,10 @@ export default function RootLayout({ children, session }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AppSessionContextProvider session={session}>
-            <Loading>{children}</Loading>
-            <Toaster />
-          </AppSessionContextProvider>
-        </ThemeProvider>
+        <AppSessionContextProvider session={session}>
+          <Loading>{children}</Loading>
+          <Toaster />
+        </AppSessionContextProvider>
       </body>
     </html>
   );
