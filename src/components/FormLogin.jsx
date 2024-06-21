@@ -98,7 +98,7 @@ export function FormLogin({ role = ROLES.CLIENT }) {
   return (
     <div className="flex flex-col space-y-2">
       {error && <AlertError message={error} />}
-      <Card className="w-[350px] mx-auto">
+      <Card className="mx-auto min-w-[calc(35vw)] max-w-max">
         <CardHeader>
           <CardTitle>Iniciar Sesión</CardTitle>
         </CardHeader>
@@ -114,7 +114,10 @@ export function FormLogin({ role = ROLES.CLIENT }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      DNI <span className="text-red-500 text-xs">(*)</span>
+                      DNI{" "}
+                      <span className="text-xs text-red-500 md:text-sm">
+                        (*)
+                      </span>
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="00000001" {...field} />
@@ -130,7 +133,7 @@ export function FormLogin({ role = ROLES.CLIENT }) {
                   <FormItem>
                     <FormLabel>
                       Contraseña{" "}
-                      <span className="text-red-500 text-xs">(*)</span>
+                      <span className="text-xs text-red-500">(*)</span>
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -144,7 +147,7 @@ export function FormLogin({ role = ROLES.CLIENT }) {
                 )}
               />
 
-              <div className="flex flex-col space-y-4 items-center">
+              <div className="flex flex-col items-center space-y-4">
                 {role === ROLES.CLIENT && (
                   <CardDescription>
                     No tienes una cuenta?{" "}

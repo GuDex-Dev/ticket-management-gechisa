@@ -18,11 +18,13 @@ import { useAppContext } from "./context/AppSessionContextProvider";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { ROLES } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 function Navbar({ role }) {
   const { data } = useSession();
   const { navbarOptions } = useAppContext();
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -33,16 +35,18 @@ function Navbar({ role }) {
   }
 
   const sidebarOptionsVariants = cva(
-    "group inline-flex h-14 w-max items-center justify-center rounded-none transition-colors disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 font-semibold",
+    "group inline-flex h-14 w-max items-center justify-center rounded-none transition-colors disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 font-bold",
     {
       variants: {
-        role: {
-          CLIENT: `hover:text-yellow-500 text-yellow-500 decoration-yellow-500`,
-          NOCLIENT: `hover:text-sky-600 text-sky-600 decoration-sky-600`,
+        role_selected: {
+          CLIENT_true: `text-yellow-500 hover:text-yellow-500 decoration-yellow-500`,
+          CLIENT_false: `hover:text-yellow-500 decoration-yellow-500`,
+          NOCLIENT_true: `text-sky-600 hover:text-sky-600 decoration-sky-600`,
+          NOCLIENT_false: `hover:text-sky-600 decoration-sky-600`,
         },
         type: {
           title: `w-full text-center text-3xl`,
-          subtitle: `text-foreground hover:underline text-lg`,
+          subtitle: `hover:underline text-lg`,
         },
       },
       defaultVariants: {
@@ -52,16 +56,22 @@ function Navbar({ role }) {
   );
 
   const navbarOptionsVariants = cva(
-    `group inline-flex h-14 w-max items-center justify-center rounded-none text-primary-foreground px-4 py-2 transition-colors disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50`,
+    `group inline-flex h-14 w-max items-center justify-center rounded-none px-4 text-primary-foreground py-2 transition-colors disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50`,
     {
       variants: {
-        role: {
-          CLIENT: `hover:text-yellow-500 decoration-yellow-500`,
-          NOCLIENT: `hover:text-sky-600 decoration-sky-600`,
+        role_selected: {
+          CLIENT_true: `text-yellow-500 hover:text-yellow-500 decoration-yellow-500`,
+          CLIENT_false: `hover:text-yellow-500 decoration-yellow-500`,
+          NOCLIENT_true: `text-sky-600 hover:text-sky-600 decoration-sky-600`,
+          NOCLIENT_false: `hover:text-sky-600 decoration-sky-600`,
         },
       },
     },
   );
+
+  function getVariantRoleSelected(href) {
+    return `${role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT"}_${href === pathname}`;
+  }
 
   return (
     <header className="bg-primary shadow-md">
@@ -70,7 +80,9 @@ function Navbar({ role }) {
           <Link
             href={`/${role.toLowerCase()}/dashboard`}
             className={navbarOptionsVariants({
-              role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+              role_selected: getVariantRoleSelected(
+                `/${role.toLowerCase()}/dashboard`,
+              ),
             })}
           >
             GECHISA
@@ -84,13 +96,15 @@ function Navbar({ role }) {
           </Link>
         </H1>
         <div className="flex items-center space-x-4">
-          <div className="hidden items-center space-x-4 text-lg md:flex">
+          <div className="hidden items-center space-x-4 text-xl md:flex">
             {data?.user?.role !== role ? (
               <>
                 <Link
                   href={`/${role.toLowerCase()}/auth/login`}
                   className={navbarOptionsVariants({
-                    role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                    role_selected: getVariantRoleSelected(
+                      `/${role.toLowerCase()}/auth/login`,
+                    ),
                   })}
                 >
                   Iniciar Sesión
@@ -99,7 +113,7 @@ function Navbar({ role }) {
                   <Link
                     href={`/client/register`}
                     className={navbarOptionsVariants({
-                      role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                      role_selected: getVariantRoleSelected(`/client/register`),
                     })}
                   >
                     Regístrate
@@ -113,7 +127,7 @@ function Navbar({ role }) {
                     key={i}
                     href={option.href}
                     className={navbarOptionsVariants({
-                      role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                      role_selected: getVariantRoleSelected(option.href),
                     })}
                   >
                     {option.title}
@@ -174,7 +188,9 @@ function Navbar({ role }) {
                       href={`/${role.toLowerCase()}/dashboard`}
                       className={cn(
                         sidebarOptionsVariants({
-                          role: role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                          role_selected: getVariantRoleSelected(
+                            `/${role.toLowerCase()}/dashboard`,
+                          ),
                           type: "title",
                         }),
                       )}
@@ -197,8 +213,9 @@ function Navbar({ role }) {
                           href={`/${role.toLowerCase()}/auth/login`}
                           className={cn(
                             sidebarOptionsVariants({
-                              role:
-                                role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                              role_selected: getVariantRoleSelected(
+                                `/${role.toLowerCase()}/auth/login`,
+                              ),
                             }),
                           )}
                         >
@@ -211,8 +228,8 @@ function Navbar({ role }) {
                             href={`/client/register`}
                             className={cn(
                               sidebarOptionsVariants({
-                                role:
-                                  role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                                role_selected:
+                                  getVariantRoleSelected(`/client/register`),
                               }),
                             )}
                           >
@@ -230,8 +247,9 @@ function Navbar({ role }) {
                             href={option.href}
                             className={cn(
                               sidebarOptionsVariants({
-                                role:
-                                  role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT",
+                                role_selected: getVariantRoleSelected(
+                                  option.href,
+                                ),
                               }),
                             )}
                           >
