@@ -4,8 +4,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 function AlertError({ message }) {
   return (
-    <Alert className="w-[350px] mx-auto" variant="destructive">
-      <AlertCircle className="h-4 w-4" />
+    <Alert
+      className="mx-auto min-w-[calc(35vw)] max-w-max"
+      variant="destructive"
+    >
+      <AlertCircle className="h-5 w-5" />
       <AlertTitle>Error</AlertTitle>
       <AlertDescription>
         {message || "Ha ocurrido un error inesperado."}

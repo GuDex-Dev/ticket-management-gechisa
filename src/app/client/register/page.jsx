@@ -91,14 +91,14 @@ const formSchema = z
   });
 
 // * FETCH API
-async function apiRegisterClient(origin_city_id) {
+async function apiRegisterClient(data) {
   try {
     const res = await fetch("/api/client/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ origin_city_id }),
+      body: JSON.stringify(data),
     });
 
     const json = await res.json();
