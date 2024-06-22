@@ -19,7 +19,6 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { ROLES } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { ROUTES } from "@/lib/utils";
 import BreadcrumbNavbar from "@/components/NavbarElements";
 
 function Navbar({ role }) {
@@ -82,7 +81,7 @@ function Navbar({ role }) {
   }
 
   return (
-    <header className="bg-primary shadow-md">
+    <header className="bg-primary shadow-md fixed top-0 w-full z-50">
       <nav className="container mx-auto flex h-14 items-center justify-between px-4 font-bold sm:px-6 lg:px-8">
         <H1>
           <Link
