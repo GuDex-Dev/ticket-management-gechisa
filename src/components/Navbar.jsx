@@ -19,6 +19,8 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { ROLES } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { ROUTES } from "@/lib/utils";
+import BreadcrumbNavbar from "@/components/NavbarElements";
 
 function Navbar({ role }) {
   const { data } = useSession();
@@ -73,6 +75,12 @@ function Navbar({ role }) {
     return `${role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT"}_${href === pathname}`;
   }
 
+  function getOptionClassname(isLast = false) {
+    return navbarOptionsVariants({
+      role_selected: `${role === ROLES.CLIENT ? "CLIENT" : "NOCLIENT"}_${isLast ? "true" : "false"}`,
+    });
+  }
+
   return (
     <header className="bg-primary shadow-md">
       <nav className="container mx-auto flex h-14 items-center justify-between px-4 font-bold sm:px-6 lg:px-8">
@@ -122,7 +130,9 @@ function Navbar({ role }) {
               </>
             ) : (
               <>
-                {navbarOptions?.options?.map((option, i) => (
+                <BreadcrumbNavbar getOptionClassname={getOptionClassname} />
+
+                {/* {navbarOptions?.options?.map((option, i) => (
                   <Link
                     key={i}
                     href={option.href}
@@ -132,7 +142,7 @@ function Navbar({ role }) {
                   >
                     {option.title}
                   </Link>
-                ))}
+                ))} */}
 
                 <Button
                   className="ml-4"

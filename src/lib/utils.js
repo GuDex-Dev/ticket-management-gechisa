@@ -10,3 +10,32 @@ export const ROLES = {
   SALESPERSON: "Salesperson",
   ADMINISTRATOR: "Administrator",
 };
+
+export const ROUTES = {
+  "/administrator/dashboard": {
+    name: "-",
+    children: {
+      "/trip": {
+        name: "Viajes",
+        children: {
+          "/create": "Crear Viaje",
+          "/edit": "Editar Viaje",
+          "/view": {
+            name: "Ver Viaje",
+            children: {
+              "/passenger": "Pasajeros",
+              "/route": "Ruta",
+            },
+          },
+        },
+      },
+      "/route": {
+        name: "Rutas",
+        children: {
+          "/create": "Crear Ruta",
+          "/edit": "Editar Ruta",
+        },
+      },
+    },
+  },
+};

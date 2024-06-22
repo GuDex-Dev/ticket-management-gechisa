@@ -260,7 +260,6 @@ function CreateTripPage() {
     const filteredOptions = options.destination_city.filter((option) =>
       option.label.toLowerCase().includes(inputValue.toLowerCase()),
     );
-    console.log(filteredOptions);
     callback(filteredOptions);
   };
 

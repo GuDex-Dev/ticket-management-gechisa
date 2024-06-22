@@ -17,7 +17,6 @@ export default function AppSessionContextProvider({ children, session }) {
     const currentTheme = themeApp[themeType]?.actual;
     if (currentTheme) {
       document.body.className = currentTheme;
-      console.log("Theme initialized");
     }
   }
 
