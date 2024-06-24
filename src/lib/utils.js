@@ -13,7 +13,6 @@ export const ROLES = {
 
 export const ROUTES = {
   "/administrator/dashboard": {
-    name: "-",
     children: {
       "/trip": {
         name: "Viajes",
@@ -34,6 +33,24 @@ export const ROUTES = {
         children: {
           "/create": "Crear Ruta",
           "/edit": "Editar Ruta",
+        },
+      },
+    },
+  },
+  "/salesperson/dashboard": {
+    children: {
+      "/trip": {
+        name: "Viajes",
+        children: {
+          "/create": "Crear Viaje",
+          "/edit": "Editar Viaje",
+          "/view": {
+            name: "Ver Viaje",
+            children: {
+              "/passenger": "Pasajeros",
+              "/route": "Ruta",
+            },
+          },
         },
       },
     },

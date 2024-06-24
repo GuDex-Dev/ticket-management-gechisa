@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <>
       <Navbar role={ROLES.SALESPERSON} />
-      <main className="container mx-auto py-6 px-4">{children}</main>
+      <main className="container mx-auto mt-16 px-4 py-6">{children}</main>
     </>
   );
 }
