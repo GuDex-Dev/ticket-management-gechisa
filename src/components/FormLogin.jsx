@@ -27,7 +27,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -53,7 +53,6 @@ export function FormLogin({ role = ROLES.CLIENT }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
@@ -88,9 +87,8 @@ export function FormLogin({ role = ROLES.CLIENT }) {
       setError(res.error);
     } else {
       setError(null);
-      toast({
-        title: "ÉXITO",
-        description: "Inicio de sesión exitoso",
+      toast.success("Sesión iniciada correctamente", {
+        duration: 2000,
       });
     }
   };

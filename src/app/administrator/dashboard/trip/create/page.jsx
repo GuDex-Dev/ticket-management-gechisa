@@ -290,7 +290,7 @@ function CreateTripPage() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit()} className="space-y-8">
+          <form onSubmit={form.handleSubmit()} className="space-y-4">
             <FormField
               control={form.control}
               name="origin_city_id"

@@ -24,7 +24,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 // * FORM VALIDATION
@@ -116,7 +116,6 @@ async function apiRegisterClient(data) {
 export function RegisterClientPage() {
   // * HOOKS
   const router = useRouter();
-  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -126,18 +125,15 @@ export function RegisterClientPage() {
     try {
       const json = await apiRegisterClient(data);
 
-      toast({
-        title: json.message,
-        className: "bg-primary shadow-md text-primary-foreground font-bold",
+      toast.success(json.message, {
+        duration: 2000,
       });
       form.reset();
       router.push("/client/auth/login");
     } catch (error) {
       console.error("Error during registration:", error);
-      toast({
-        title: "Error durante el registro",
-        description: error.message,
-        variant: "destructive",
+      toast.error(error.message, {
+        duration: 2000,
       });
     }
   };

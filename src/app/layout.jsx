@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AppSessionContextProvider from "@/components/context/AppSessionContextProvider";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
 import Loading from "@/components/Loading";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,7 +17,7 @@ export default function RootLayout({ children, session }) {
       <body className={inter.className}>
         <AppSessionContextProvider session={session}>
           <Loading>{children}</Loading>
-          <Toaster />
+          <Toaster richColors />
         </AppSessionContextProvider>
       </body>
     </html>

@@ -422,7 +422,10 @@ function SidebarLinks() {
 
   const renderRoutes = useCallback(
     (routes, parentRoute = "") => {
-      console.log("rendering");
+      if (!routes) {
+        return null;
+      }
+
       return Object.keys(routes).map((key) => {
         const fullPath = `${parentRoute}${key}`;
         const route = routes[key];
