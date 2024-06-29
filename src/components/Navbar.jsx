@@ -34,7 +34,7 @@ const sidebarOptionsVariants = cva(
         NOCLIENT_false: `hover:text-sky-600 decoration-sky-600`,
       },
       type: {
-        title: `text-center text-2xl md:text-3xl h-12 md:h-14 justify-center`,
+        title: `text-center text-2xl md:text-[1.6rem] h-12 md:h-14 justify-center`,
         subtitle: `w-full hover:underline text-base md:text-lg h-10 md:h-12 justify-start`,
       },
     },
