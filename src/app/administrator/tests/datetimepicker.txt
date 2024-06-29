@@ -1,0 +1,68 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { useAppContext } from "@/components/context/AppSessionContextProvider";
+
+function TestsPage() {
+  useAppContext();
+  const [date, setDate] = useState();
+  const [time, setTime] = useState("00:00");
+
+  return (
+    <div>
+      <style jsx>{`
+        input[type="time"]::-webkit-calendar-picker-indicator {
+          filter: ${document.body.className.includes("dark")
+            ? "invert(1)"
+            : "invert(0)"};
+        }
+        input[type="time"]::-moz-focus-inner {
+          border: 0;
+        }
+        input[type="time"] {
+          color-scheme: ${document.body.className.includes("dark")
+            ? "dark"
+            : "light"};
+        }
+      `}</style>
+      <h1>Selecciona Fecha y Hora</h1>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"outline"}
+            className={`w-[280px] justify-start text-left font-normal ${!date ? "text-muted-foreground" : ""}`}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date ? format(date, "dd/MM/yyyy") : <span>Pick a date</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+      <div className="w-min p-2">
+        <input
+          type="time"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          className="w-full rounded border border-input bg-input p-2 text-foreground hover:bg-accent hover:text-accent-foreground"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default TestsPage;

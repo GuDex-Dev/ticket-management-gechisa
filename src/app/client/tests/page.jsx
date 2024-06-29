@@ -46,7 +46,7 @@ function CreateTripPage() {
   useEffect(() => {
     const loadOptions = async () => {
       try {
-        const origin_city_id = sessionData?.user?.city?.id;
+        const origin_city_id = 2;
         if (!origin_city_id) {
           setIsLoading(false);
           return;
