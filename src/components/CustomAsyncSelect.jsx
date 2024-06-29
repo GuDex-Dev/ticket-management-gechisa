@@ -3,19 +3,21 @@ import { useAppContext } from "@/components/context/AppSessionContextProvider";
 
 const selectClassnames = {
   control: (state) =>
-    `border ${state.isFocused ? "border-primary" : "border-border"} hover:border-primary ${state.isDisabled ? "bg-muted text-muted-foreground" : "bg-card text-foreground"}    `,
+    `border ${state.isFocused ? "border-primary" : "border-border"} hover:border-primary ${state.isDisabled ? "bg-muted text-muted-foreground" : "bg-card text-foreground"}`,
   input: (state) => `text-foreground`,
   placeholder: (state) => `text-muted-foreground`,
-  // singleValue: (state) => ``,
   dropdownIndicator: (state) => `text-muted-foreground`,
   indicatorSeparator: (state) => `bg-border`,
   loadingIndicator: (state) => ``,
   loadingMessage: (state) => ``,
   menu: (state) => `bg-card border border-border`,
+  menuList: (state) =>
+    `overflow-y-auto relative overflow-scroll-touch pb-1 pt-1 box-border menuList-scrollbar`,
   option: (state) =>
     `${state.isSelected ? "bg-primary text-primary-foreground" : "hover:bg-input"} cursor-pointer active:bg-primary active:text-primary-foreground px-2 py-1`,
   noOptionsMessage: (state) => ``,
 };
+
 const resetSelectStyles = {
   control: (baseStyles) => {
     return {
@@ -59,8 +61,18 @@ const resetSelectStyles = {
   menu: (baseStyles) => {
     return { ...baseStyles, backgroundColor: "" };
   },
+  menuList: (baseStyles) => {
+    return {
+      ...baseStyles,
+      overflowY: "auto",
+      position: "relative",
+      WebkitOverflowScrolling: "touch",
+      paddingBottom: 4,
+      paddingTop: 4,
+      boxSizing: "border-box",
+    };
+  },
   option: (baseStyles) => {
-    console.log(baseStyles);
     return {
       ":active:": {
         backgroundColor: "", //transparent
@@ -100,6 +112,8 @@ function CustomAsyncSelect({
       isDisabled={isDisabled}
       isLoading={isLoading}
       maxMenuHeight={maxMenuHeight}
+      loadingMessage={() => "Cargando..."}
+      placeholder="Selecciona..."
     />
   );
 }

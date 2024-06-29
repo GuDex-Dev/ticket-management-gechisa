@@ -86,8 +86,8 @@ function CreateTripPage() {
     loadOptions();
   }, [sessionData]);
 
-  const loadDestinationCityOptions = (inputValue, callback) => {
-    const filteredOptions = options.destination_city.filter((option) =>
+  const loadDriverOptions = (inputValue, callback) => {
+    const filteredOptions = options.driver.filter((option) =>
       option.label.toLowerCase().includes(inputValue.toLowerCase()),
     );
     callback(filteredOptions);
@@ -96,44 +96,11 @@ function CreateTripPage() {
   return (
     <>
       <CustomAsyncSelect
-        loadOptions={loadDestinationCityOptions}
-        defaultOptions={isLoading ? [] : options.destination_city}
+        loadOptions={loadDriverOptions}
+        maxMenuHeight={100}
+        defaultOptions={isLoading ? [] : options.driver}
         isLoading={isLoading}
-        isTest
       />
-      <br />
-
-      <CustomAsyncSelect
-        loadOptions={loadDestinationCityOptions}
-        defaultOptions={isLoading ? [] : options.destination_city}
-        isLoading={isLoading}
-        isTest
-        isDisabled
-      />
-      <br />
-      <CustomAsyncSelect
-        loadOptions={loadDestinationCityOptions}
-        defaultOptions={isLoading ? [] : options.destination_city}
-        isLoading={isLoading}
-        isDisabled
-      />
-      <br />
-
-      <Select>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Select a fruit" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Fruits</SelectLabel>
-            <SelectItem value="apple">Apple</SelectItem>
-            <SelectItem value="banana">Banana</SelectItem>
-            <SelectItem value="blueberry">Blueberry</SelectItem>
-            <SelectItem value="grapes">Grapes</SelectItem>
-            <SelectItem value="pineapple">Pineapple</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
       <br />
 
       <div className="grid grid-cols-10">
