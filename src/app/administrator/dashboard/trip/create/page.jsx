@@ -10,8 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import AsyncSelect from "react-select/async";
-import Select from "react-select";
+import CustomAsyncSelect from "@/components/CustomAsyncSelect";
 
 // * IMPORTS UTILS
 import { z } from "zod";
@@ -25,11 +24,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppContext } from "@/components/context/AppSessionContextProvider";
-import { usePathname } from "next/navigation";
 
 // * FORM VALIDATION
 const formSchema = z.object({
@@ -81,156 +77,28 @@ async function apiGetOptions(origin_city_id) {
 // ! MAIN COMPONENT
 function CreateTripPage() {
   // * HOOKS
-  useAppContext();
   const { data: sessionData } = useSession();
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
 
   // * VARIABLES
-  const selectStyles = {
-    control: (baseStyles, state) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        display: "flex",
-        alignItems: "center",
-        borderColor: state.isFocused
-          ? isLightTheme
-            ? "#fbbf24" // primary color for light theme
-            : "#f59e0b" // primary color for dark theme
-          : isLightTheme
-            ? "#d1d5db" // input border color for light theme
-            : "#a3a3a3", // input border color for dark theme
-        backgroundColor: isLightTheme ? "#ffffff" : "#1f2937", // background color
-        borderRadius: "0.375rem", // rounded-md
-        boxShadow: state.isFocused
-          ? `0 0 0 2px ${isLightTheme ? "#fbbf24" : "#f59e0b"}` // ring color
-          : "none",
-        padding: "0.2rem", // padding
-        "&:hover": {
-          borderColor: isLightTheme ? "#fbbf24" : "#f59e0b", // hover border color
-        },
-        ...(state.isDisabled && {
-          backgroundColor: isLightTheme ? "#f9fafb" : "#374151",
-          borderColor: isLightTheme ? "#e5e7eb" : "#4b5563",
-          cursor: "not-allowed",
-          opacity: "0.6",
-        }),
-      };
-    },
-    input: (baseStyles) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        color: isLightTheme ? "#111827" : "#fbbf24", // foreground color
-      };
-    },
-    menu: (baseStyles) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        backgroundColor: isLightTheme ? "#ffffff" : "#374151", // card background color
-        borderColor: isLightTheme ? "#d1d5db" : "#a3a3a3", // input border color
-        marginTop: "0.25rem", // margin top
-        borderRadius: "0.375rem", // rounded-md
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // shadow-lg
-      };
-    },
-    option: (baseStyles, state) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        cursor: "pointer", // cursor-pointer
-        padding: "0.2rem 0.5rem", // padding
-        fontFamily: "monospace",
-        fontSize: "1rem",
-        backgroundColor: state.isSelected
-          ? isLightTheme
-            ? "#fbbf24" // primary color for selected option
-            : "#f59e0b" // primary color for selected option in dark theme
-          : isLightTheme
-            ? "#ffffff" // card background color
-            : "#374151", // card background color for dark theme
-        color: state.isSelected
-          ? "#ffffff" // text color for selected option
-          : isLightTheme
-            ? "#111827" // foreground color
-            : "#fbbf24", // foreground color for dark theme
-        "&:hover": {
-          backgroundColor: state.isFocused
-            ? isLightTheme
-              ? "#f3f4f6" // secondary background color for light theme
-              : "#4b5563" // secondary background color for dark theme
-            : isLightTheme
-              ? "#ffffff" // card background color
-              : "#374151", // card background color for dark theme
-        },
-      };
-    },
-    placeholder: (baseStyles) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        color: isLightTheme ? "#6b7280" : "#9ca3af", // muted foreground color
-      };
-    },
-    singleValue: (baseStyles) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        color: isLightTheme ? "#111827" : "#e5e7eb", // foreground color
-      };
-    },
-    multiValue: (baseStyles) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        backgroundColor: isLightTheme ? "#e5e7eb" : "#4b5563", // secondary background color
-        color: isLightTheme ? "#374151" : "#d1d5db", // secondary foreground color
-        borderRadius: "9999px", // rounded-full
-        padding: "0.25rem 0.5rem", // padding
-      };
-    },
-    multiValueLabel: (baseStyles) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        color: isLightTheme ? "#374151" : "#d1d5db", // secondary foreground color
-      };
-    },
-    multiValueRemove: (baseStyles) => {
-      const isLightTheme = document.body.className.includes("light");
-
-      return {
-        ...baseStyles,
-        color: isLightTheme ? "#374151" : "#d1d5db", // secondary foreground color
-        "&:hover": {
-          backgroundColor: isLightTheme ? "#ef4444" : "#991b1b", // destructive background color
-          color: "#ffffff", // destructive foreground color
-        },
-        borderRadius: "9999px", // rounded-full
-        padding: "0.25rem", // padding
-        cursor: "pointer", // cursor-pointer
-      };
-    },
-  };
-  const [options, setOptions] = useState(null);
+  const [options, setOptions] = useState({
+    destination_city: [],
+    bus: [],
+    driver: [],
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   // * FUNCTIONS
   useEffect(() => {
     const loadOptions = async () => {
       try {
         const origin_city_id = sessionData?.user?.city?.id;
-        if (!origin_city_id) return;
+        if (!origin_city_id) {
+          setIsLoading(false);
+          return;
+        }
 
         const result = await apiGetOptions(origin_city_id);
         const formattedOptions = {
@@ -248,11 +116,12 @@ function CreateTripPage() {
           })),
         };
         setOptions(formattedOptions);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error loading options:", error);
+        setIsLoading(false);
       }
     };
-
     loadOptions();
   }, [sessionData]);
 
@@ -277,10 +146,8 @@ function CreateTripPage() {
     callback(filteredOptions);
   };
 
-  if (!options) return null;
-
   return (
-    <Card className="mx-auto min-w-[calc(35vw)] max-w-max">
+    <Card className="mx-auto min-w-[calc(35vw)] w-auto max-w-max">
       <CardHeader>
         <CardTitle>Crear Viaje</CardTitle>
         <CardDescription>
@@ -298,8 +165,7 @@ function CreateTripPage() {
                 <FormItem>
                   <FormLabel>Ciudad de Origen</FormLabel>
                   <FormControl>
-                    <AsyncSelect
-                      styles={selectStyles}
+                    <CustomAsyncSelect
                       onChange={(value) =>
                         form.setValue("origin_city_id", value.value)
                       }
@@ -308,6 +174,7 @@ function CreateTripPage() {
                         label: sessionData.user?.city?.name,
                       }}
                       isDisabled
+                      isTest
                     />
                   </FormControl>
                   <FormMessage />
@@ -321,13 +188,13 @@ function CreateTripPage() {
                 <FormItem>
                   <FormLabel>Ciudad de Destino</FormLabel>
                   <FormControl>
-                    <AsyncSelect
-                      styles={selectStyles}
+                    <CustomAsyncSelect
+                      loadOptions={loadDestinationCityOptions}
                       onChange={(value) =>
                         form.setValue("destination_city_id", value.value)
                       }
-                      loadOptions={loadDestinationCityOptions}
-                      defaultOptions
+                      defaultOptions={isLoading ? [] : options.destination_city}
+                      isLoading={isLoading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -342,12 +209,13 @@ function CreateTripPage() {
                 <FormItem>
                   <FormLabel>Bus</FormLabel>
                   <FormControl>
-                    <AsyncSelect
-                      styles={selectStyles}
-                      onChange={(value) => form.setValue("bus_id", value.value)}
+                    <CustomAsyncSelect
                       loadOptions={loadBusOptions}
-                      defaultOptions
+                      onChange={(value) => form.setValue("bus_id", value.value)}
                       maxMenuHeight={200}
+                      defaultOptions={isLoading ? [] : options.bus}
+                      isLoading={isLoading}
+                      isTest
                     />
                   </FormControl>
                   <FormMessage />
@@ -362,14 +230,14 @@ function CreateTripPage() {
                 <FormItem>
                   <FormLabel>Conductor</FormLabel>
                   <FormControl>
-                    <AsyncSelect
-                      styles={selectStyles}
+                    <CustomAsyncSelect
+                      loadOptions={loadDriverOptions}
                       onChange={(value) =>
                         form.setValue("driver_id", value.value)
                       }
-                      loadOptions={loadDriverOptions}
-                      defaultOptions
-                      maxMenuHeight={200}
+                      maxMenuHeight={100}
+                      defaultOptions={isLoading ? [] : options.driver}
+                      isLoading={isLoading}
                     />
                   </FormControl>
                   <FormMessage />

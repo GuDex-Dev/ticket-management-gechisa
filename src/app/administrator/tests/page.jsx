@@ -1,6 +1,15 @@
 "use client";
 // * IMPORTS UI
 import CustomAsyncSelect from "@/components/CustomAsyncSelect";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // * IMPORTS UTILS
 import { useSession } from "next-auth/react";
@@ -23,7 +32,6 @@ async function apiGetOptions(origin_city_id) {
       throw new Error(json.message);
     }
 
-    console.log("api finished");
     return json;
   } catch (error) {
     throw new Error(error.message);
@@ -54,7 +62,6 @@ function CreateTripPage() {
         }
 
         const result = await apiGetOptions(origin_city_id);
-        console.log("API result:", result);
 
         const formattedOptions = {
           destination_city: result.data.destination_city.map((city) => ({
@@ -71,10 +78,8 @@ function CreateTripPage() {
           })),
         };
         setOptions(formattedOptions);
-        console.log("Formatted options:", formattedOptions);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error loading options:", error);
         setIsLoading(false);
       }
     };
@@ -85,16 +90,91 @@ function CreateTripPage() {
     const filteredOptions = options.destination_city.filter((option) =>
       option.label.toLowerCase().includes(inputValue.toLowerCase()),
     );
-    console.log("Filtered options:", filteredOptions);
     callback(filteredOptions);
   };
 
   return (
-    <CustomAsyncSelect
-      loadOptions={loadDestinationCityOptions}
-      defaultOptions={isLoading ? [] : options.destination_city}
-      isLoading={isLoading}
-    />
+    <>
+      <CustomAsyncSelect
+        loadOptions={loadDestinationCityOptions}
+        defaultOptions={isLoading ? [] : options.destination_city}
+        isLoading={isLoading}
+        isTest
+      />
+      <br />
+
+      <CustomAsyncSelect
+        loadOptions={loadDestinationCityOptions}
+        defaultOptions={isLoading ? [] : options.destination_city}
+        isLoading={isLoading}
+        isTest
+        isDisabled
+      />
+      <br />
+      <CustomAsyncSelect
+        loadOptions={loadDestinationCityOptions}
+        defaultOptions={isLoading ? [] : options.destination_city}
+        isLoading={isLoading}
+        isDisabled
+      />
+      <br />
+
+      <Select>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select a fruit" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Fruits</SelectLabel>
+            <SelectItem value="apple">Apple</SelectItem>
+            <SelectItem value="banana">Banana</SelectItem>
+            <SelectItem value="blueberry">Blueberry</SelectItem>
+            <SelectItem value="grapes">Grapes</SelectItem>
+            <SelectItem value="pineapple">Pineapple</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      <br />
+
+      <div className="grid grid-cols-10">
+        <div className="h-20 w-20 bg-background text-green-500">background</div>
+        <div className="h-20 w-20 bg-foreground text-green-500">foreground</div>
+        <div className="h-20 w-20 bg-card text-green-500">card</div>
+        <div className="h-20 w-20 bg-card-foreground text-green-500">
+          card-foreground
+        </div>
+        <div className="h-20 w-20 bg-popover text-green-500">popover</div>
+        <div className="h-20 w-20 bg-popover-foreground text-green-500">
+          popover-foreground
+        </div>
+        <div className="h-20 w-20 bg-primary text-green-500">primary</div>
+        <div className="h-20 w-20 bg-primary-foreground text-green-500">
+          primary-foreground
+        </div>
+        <div className="h-20 w-20 bg-secondary text-green-500">secondary</div>
+        <div className="h-20 w-20 bg-secondary-foreground text-green-500">
+          secondary-foreground
+        </div>
+        <div className="h-20 w-20 bg-muted text-green-500">muted</div>
+        <div className="h-20 w-20 bg-muted-foreground text-green-500">
+          muted-foreground
+        </div>
+        <div className="h-20 w-20 bg-accent text-green-500">accent</div>
+        <div className="h-20 w-20 bg-accent-foreground text-green-500">
+          accent-foreground
+        </div>
+        <div className="h-20 w-20 bg-destructive text-green-500">
+          destructive
+        </div>
+        <div className="h-20 w-20 bg-destructive-foreground text-green-500">
+          destructive-foreground
+        </div>
+        <div className="h-20 w-20 bg-border text-green-500">border</div>
+        <div className="h-20 w-20 bg-input text-green-500">input</div>
+        <div className="h-20 w-20 bg-ring text-green-500">ring</div>
+        <div className="bg-radius h-20 w-20 text-green-500"></div>
+      </div>
+    </>
   );
 }
 

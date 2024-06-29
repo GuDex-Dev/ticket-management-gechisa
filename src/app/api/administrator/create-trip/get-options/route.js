@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { number } from "zod";
 
 const db = require("@/lib/db");
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(req, res) {
   try {
@@ -58,6 +59,7 @@ export async function POST(req, res) {
           first_name: data.driver_first_name,
           last_name: data.driver_last_name,
         }));
+        await wait(2000);
 
         return NextResponse.json(
           {
