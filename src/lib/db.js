@@ -24,6 +24,7 @@ async function getPool() {
       })
       .catch((err) => {
         console.error("Database connection failed: ", err);
+        poolPromise = null; // Reset poolPromise in case of connection failure
         throw err;
       });
   }
@@ -48,5 +49,5 @@ async function executeProcedure(data, inputs, procedureName) {
 module.exports = {
   sql,
   executeProcedure,
-  poolPromise: getPool(),
+  getPool,
 };

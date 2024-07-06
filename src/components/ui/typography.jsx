@@ -12,3 +12,16 @@ export function H1({ children, className }) {
     </h1>
   );
 }
+
+export function TimeSubtitle({ children, className }) {
+  return (
+    <h4
+      className={cn(
+        "scroll-m-20 text-sm font-semibold tracking-tight",
+        className,
+      )}
+    >
+      {children}
+    </h4>
+  );
+}
