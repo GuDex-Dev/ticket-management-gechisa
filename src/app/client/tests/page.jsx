@@ -1,6 +1,6 @@
 "use client";
 // * IMPORTS UI
-import CustomAsyncSelect from "@/components/CustomAsyncSelect";
+import CustomAsyncSelect from "@/components/formsElements/CustomAsyncSelect";
 
 // * IMPORTS UTILS
 import { useSession } from "next-auth/react";

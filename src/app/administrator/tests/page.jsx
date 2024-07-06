@@ -1,139 +1,81 @@
 "use client";
-// * IMPORTS UI
-import CustomAsyncSelect from "@/components/CustomAsyncSelect";
+// pages/index.js
+import { useForm, Controller } from "react-hook-form";
+import Select from "react-select";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-// * IMPORTS UTILS
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+// Define the schema using zod
+const formSchema = z.object({
+  city: z
+    .object({
+      value: z.number().int(),
+      label: z.string(),
+    })
+    .nullable()
+    .refine((val) => val !== null, {
+      message: "City is required",
+    }),
+});
 
-// * FETCH DATA
-async function apiGetOptions(origin_city_id) {
-  try {
-    const res = await fetch("/api/administrator/create-trip/get-options", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ origin_city_id }),
-    });
+const options = [
+  { value: 1, label: "Piura" },
+  { value: 2, label: "Sullana" },
+  { value: 3, label: "Mancora" },
+];
 
-    const json = await res.json();
-
-    if (!res.ok) {
-      throw new Error(json.message);
-    }
-
-    return json;
-  } catch (error) {
-    throw new Error(error.message);
-  }
-}
-
-// ! MAIN COMPONENT
-function CreateTripPage() {
-  // * HOOKS
-  const { data: sessionData } = useSession();
-
-  // * VARIABLES
-  const [options, setOptions] = useState({
-    destination_city: [],
-    bus: [],
-    driver: [],
+export default function Home() {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      city: null,
+    },
   });
-  const [isLoading, setIsLoading] = useState(true);
 
-  // * FUNCTIONS
-  useEffect(() => {
-    const loadOptions = async () => {
-      try {
-        const origin_city_id = sessionData?.user?.city?.id;
-        if (!origin_city_id) {
-          setIsLoading(false);
-          return;
-        }
+  const onSubmit = (data) => {
+    // Extract the integer value for the API
+    const cityValue = data.city?.value;
+    console.log(cityValue);
+    // Make your API call here
+  };
 
-        const result = await apiGetOptions(origin_city_id);
-
-        const formattedOptions = {
-          destination_city: result.data.destination_city.map((city) => ({
-            value: city.id,
-            label: city.name,
-          })),
-          bus: result.data.bus.map((bus) => ({
-            value: bus.placa,
-            label: `${bus.placa} - ${bus.seats_count} asientos`,
-          })),
-          driver: result.data.driver.map((driver) => ({
-            value: driver.id,
-            label: `${driver.id} - ${driver.last_name}`,
-          })),
-        };
-        setOptions(formattedOptions);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-      }
-    };
-    loadOptions();
-  }, [sessionData]);
-
-  const loadDriverOptions = (inputValue, callback) => {
-    const filteredOptions = options.driver.filter((option) =>
-      option.label.toLowerCase().includes(inputValue.toLowerCase()),
-    );
-    callback(filteredOptions);
+  const handleReset = () => {
+    reset({
+      city: null,
+    });
   };
 
   return (
-    <>
-      <CustomAsyncSelect
-        loadOptions={loadDriverOptions}
-        maxMenuHeight={100}
-        defaultOptions={isLoading ? [] : options.driver}
-        isLoading={isLoading}
-      />
-      <br />
-
-      <div className="grid grid-cols-10">
-        <div className="h-20 w-20 bg-background text-green-500">background</div>
-        <div className="h-20 w-20 bg-foreground text-green-500">foreground</div>
-        <div className="h-20 w-20 bg-card text-green-500">card</div>
-        <div className="h-20 w-20 bg-card-foreground text-green-500">
-          card-foreground
-        </div>
-        <div className="h-20 w-20 bg-popover text-green-500">popover</div>
-        <div className="h-20 w-20 bg-popover-foreground text-green-500">
-          popover-foreground
-        </div>
-        <div className="h-20 w-20 bg-primary text-green-500">primary</div>
-        <div className="h-20 w-20 bg-primary-foreground text-green-500">
-          primary-foreground
-        </div>
-        <div className="h-20 w-20 bg-secondary text-green-500">secondary</div>
-        <div className="h-20 w-20 bg-secondary-foreground text-green-500">
-          secondary-foreground
-        </div>
-        <div className="h-20 w-20 bg-muted text-green-500">muted</div>
-        <div className="h-20 w-20 bg-muted-foreground text-green-500">
-          muted-foreground
-        </div>
-        <div className="h-20 w-20 bg-accent text-green-500">accent</div>
-        <div className="h-20 w-20 bg-accent-foreground text-green-500">
-          accent-foreground
-        </div>
-        <div className="h-20 w-20 bg-destructive text-green-500">
-          destructive
-        </div>
-        <div className="h-20 w-20 bg-destructive-foreground text-green-500">
-          destructive-foreground
-        </div>
-        <div className="h-20 w-20 bg-border text-green-500">border</div>
-        <div className="h-20 w-20 bg-input text-green-500">input</div>
-        <div className="h-20 w-20 bg-ring text-green-500">ring</div>
-        <div className="bg-radius h-20 w-20 text-green-500"></div>
-      </div>
-    </>
+    <div>
+      <h1>React Hook Form with React Select and Zod</h1>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="city"
+          control={control}
+          render={({ field }) => (
+            <div>
+              <Select
+                {...field}
+                options={options}
+                isClearable
+                placeholder="Select a city"
+              />
+              {errors.city && (
+                <p style={{ color: "red" }}>{errors.city.message}</p>
+              )}
+            </div>
+          )}
+        />
+        <button type="submit">Submit</button>
+        <button type="button" onClick={handleReset}>
+          Reset
+        </button>
+      </form>
+    </div>
   );
 }
-
-export default CreateTripPage;
