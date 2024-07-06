@@ -2,28 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ScrollBar AsyncSelect */
-.menuList-scrollbar::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.menuList-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.menuList-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-
-.menuList-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #aaa;
-}
-
 @layer base {
+  /* Time Picker React Datepicker */
+
+
+
+  /* Time Picker */
+  .custom-time-input {
+    @apply w-full rounded border border-input bg-card p-2 text-foreground transition-all duration-100 ease-in-out;
+  }
+
+  .custom-time-input::-webkit-calendar-picker-indicator {
+    @apply cursor-pointer brightness-0 contrast-0 hue-rotate-0 invert saturate-0 sepia-0 filter;
+  }
+
+  .custom-time-input:hover {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  .custom-time-input::placeholder {
+    @apply text-muted-foreground;
+  }
+
+  .custom-time-input:focus {
+    @apply outline-none ring-2 ring-ring;
+  }
+
+  /* .custom-time-input::after {
+    content: "";
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem; 
+    height: 1rem;
+    background-image: url("ruta/al/tu/icono-de");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none; Para que el ícono no sea interactivo
+  } */
+
+  /* ScrollBar AsyncSelect */
+
+  .menuList-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .menuList-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .menuList-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-input;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .menuList-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-border;
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
