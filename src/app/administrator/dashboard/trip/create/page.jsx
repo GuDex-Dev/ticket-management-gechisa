@@ -1,5 +1,5 @@
 "use client";
-// * IMPORTS UI
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,13 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import CustomAsyncSelect from "@/components/CustomAsyncSelect";
-
-// * IMPORTS UTILS
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useSession } from "next-auth/react";
+import CustomAsyncSelect from "@/components/formsElements/CustomAsyncSelect";
 import {
   Card,
   CardContent,
@@ -24,130 +18,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { useAppContext } from "@/components/context/AppSessionContextProvider";
+import DateTimePicker from "@/components/formsElements/DateTimePicker";
+import { useCreateTripForm } from "./hooks";
 
-// * FORM VALIDATION
-const formSchema = z.object({
-  origin_city_id: z
-    .number({ required_error: "Este campo es obligatorio" })
-    .int(),
-  destination_city_id: z
-    .number({ required_error: "Este campo es obligatorio" })
-    .int(),
-  bus_id: z
-    .string({
-      required_error: "Este campo es obligatorio",
-    })
-    .regex(/^[0-9A-Za-z]{6}$/),
-  driver_id: z
-    .string({
-      required_error: "Este campo es obligatorio",
-    })
-    .regex(/^DRI[0-9]{8}$/),
-  datetime: z.date({
-    required_error: "Este campo es obligatorio",
-  }),
-  price: z.number().positive("El precio debe ser positivo"),
-});
-
-// * FETCH DATA
-async function apiGetOptions(origin_city_id) {
-  try {
-    const res = await fetch("/api/administrator/create-trip/get-options", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ origin_city_id }),
-    });
-
-    const json = await res.json();
-
-    if (!res.ok) {
-      throw new Error(json.message);
-    }
-
-    return json;
-  } catch (error) {
-    throw new Error(error.message);
-  }
-}
-
-// ! MAIN COMPONENT
 function CreateTripPage() {
-  // * HOOKS
-  const { data: sessionData } = useSession();
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-  });
-
-  // * VARIABLES
-  const [options, setOptions] = useState({
-    destination_city: [],
-    bus: [],
-    driver: [],
-  });
-  const [isLoading, setIsLoading] = useState(true);
-
-  // * FUNCTIONS
-  useEffect(() => {
-    const loadOptions = async () => {
-      try {
-        const origin_city_id = sessionData?.user?.city?.id;
-        if (!origin_city_id) {
-          setIsLoading(false);
-          return;
-        }
-
-        const result = await apiGetOptions(origin_city_id);
-        const formattedOptions = {
-          destination_city: result.data.destination_city.map((city) => ({
-            value: city.id,
-            label: city.name,
-          })),
-          bus: result.data.bus.map((bus) => ({
-            value: bus.placa,
-            label: `${bus.placa} - ${bus.seats_count} asientos`,
-          })),
-          driver: result.data.driver.map((driver) => ({
-            value: driver.id,
-            label: `${driver.id} - ${driver.last_name}`,
-          })),
-        };
-        setOptions(formattedOptions);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error loading options:", error);
-        setIsLoading(false);
-      }
-    };
-    loadOptions();
-  }, [sessionData]);
-
-  const loadDestinationCityOptions = (inputValue, callback) => {
-    const filteredOptions = options.destination_city.filter((option) =>
-      option.label.toLowerCase().includes(inputValue.toLowerCase()),
-    );
-    callback(filteredOptions);
-  };
-
-  const loadBusOptions = (inputValue, callback) => {
-    const filteredOptions = options.bus.filter((option) =>
-      option.label.toLowerCase().includes(inputValue.toLowerCase()),
-    );
-    callback(filteredOptions);
-  };
-
-  const loadDriverOptions = (inputValue, callback) => {
-    const filteredOptions = options.driver.filter((option) =>
-      option.label.toLowerCase().includes(inputValue.toLowerCase()),
-    );
-    callback(filteredOptions);
-  };
+  const {
+    form,
+    options,
+    isLoading,
+    loadDestinationCityOptions,
+    loadBusOptions,
+    loadDriverOptions,
+    onSubmit,
+  } = useCreateTripForm();
 
   return (
-    <Card className="mx-auto min-w-[calc(35vw)] w-auto max-w-max">
+    <Card className="mx-auto w-auto min-w-[calc(35vw)] max-w-max">
       <CardHeader>
         <CardTitle>Crear Viaje</CardTitle>
         <CardDescription>
@@ -157,25 +43,15 @@ function CreateTripPage() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit()} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="origin_city_id"
-              render={() => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ciudad de Origen</FormLabel>
                   <FormControl>
-                    <CustomAsyncSelect
-                      onChange={(value) =>
-                        form.setValue("origin_city_id", value.value)
-                      }
-                      defaultValue={{
-                        value: sessionData.user?.city?.id,
-                        label: sessionData.user?.city?.name,
-                      }}
-                      isDisabled
-                      isTest
-                    />
+                    <CustomAsyncSelect field={field} isDisabled isTest />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -184,15 +60,13 @@ function CreateTripPage() {
             <FormField
               control={form.control}
               name="destination_city_id"
-              render={() => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ciudad de Destino</FormLabel>
                   <FormControl>
                     <CustomAsyncSelect
+                      field={field}
                       loadOptions={loadDestinationCityOptions}
-                      onChange={(value) =>
-                        form.setValue("destination_city_id", value.value)
-                      }
                       defaultOptions={isLoading ? [] : options.destination_city}
                       isLoading={isLoading}
                     />
@@ -205,17 +79,16 @@ function CreateTripPage() {
             <FormField
               control={form.control}
               name="bus_id"
-              render={() => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Bus</FormLabel>
                   <FormControl>
                     <CustomAsyncSelect
+                      field={field}
                       loadOptions={loadBusOptions}
-                      onChange={(value) => form.setValue("bus_id", value.value)}
                       maxMenuHeight={200}
                       defaultOptions={isLoading ? [] : options.bus}
                       isLoading={isLoading}
-                      isTest
                     />
                   </FormControl>
                   <FormMessage />
@@ -226,15 +99,13 @@ function CreateTripPage() {
             <FormField
               control={form.control}
               name="driver_id"
-              render={() => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Conductor</FormLabel>
                   <FormControl>
                     <CustomAsyncSelect
+                      field={field}
                       loadOptions={loadDriverOptions}
-                      onChange={(value) =>
-                        form.setValue("driver_id", value.value)
-                      }
                       maxMenuHeight={100}
                       defaultOptions={isLoading ? [] : options.driver}
                       isLoading={isLoading}
@@ -244,6 +115,35 @@ function CreateTripPage() {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="datetime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fecha y hora programada</FormLabel>
+                  <FormControl>
+                    <DateTimePicker {...field} className="flex space-x-8" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Precio</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" step="0.01" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button className="w-full" type="submit">
               Crear Viaje
             </Button>
