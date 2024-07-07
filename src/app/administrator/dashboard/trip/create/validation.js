@@ -37,9 +37,21 @@ export const formSchema = z.object({
     .refine((val) => val !== null, {
       message: "Este campo es obligatorio",
     }),
-
   datetime: z.date({
     required_error: "Este campo es obligatorio",
   }),
-  price: z.number().positive("El precio debe ser positivo").nullable(),
+  price: z
+    .string({
+      required_error: "Este campo es obligatorio",
+    })
+    .min(1, "Este campo es obligatorio")
+    .refine(
+      (val) => {
+        const numberVal = parseFloat(val);
+        return /^\d+(\.\d{2})?$/.test(val) && numberVal > 0;
+      },
+      {
+        message: "El precio debe ser un número positivo con dos decimales",
+      },
+    ),
 });

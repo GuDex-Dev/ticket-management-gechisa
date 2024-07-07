@@ -137,7 +137,12 @@ function CreateTripPage() {
                 <FormItem>
                   <FormLabel>Precio</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step="0.01" />
+                    <Input
+                      {...field}
+                      type="number"
+                      step="0.01"
+                      placholder="5.00"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

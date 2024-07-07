@@ -17,7 +17,8 @@ export const useCreateTripForm = () => {
     destination_city_id: null,
     bus_id: null,
     driver_id: null,
-    price: null,
+    datetime: new Date(),
+    price: "",
   };
 
   const form = useForm({
@@ -34,12 +35,34 @@ export const useCreateTripForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      const json = await apiCreateTrip(data);
+      const formData = {
+        origin_city_id: data.origin_city_id.value,
+        destination_city_id: data.destination_city_id.value,
+        bus_id: data.bus_id.value,
+        driver_id: data.driver_id.value,
+        datetime: data.datetime,
+        price: parseFloat(data.price),
+      };
 
-      toast.success(json.message, {
-        duration: 2000,
-      });
-      form.reset();
+      const json = await apiCreateTrip(formData);
+
+      console.log(json);
+      // que el toast.success tenga información importante del viaje
+      toast.success(
+        `
+        Viaje creado exitosamente:
+        Origen: ${sessionData?.user?.city?.name}
+        Destino: ${data.destination_city_id.label}
+        Bus: ${data.bus_id.label}
+        Conductor: ${data.driver_id.label}
+        Fecha: ${data.datetime}
+        Precio: ${data.price}
+        `,
+        {
+          duration: 2000,
+        },
+      );
+      form.reset(defaultValues);
     } catch (error) {
       console.error("Error during trip creation:", error);
       toast.error(error.message, {
