@@ -18,52 +18,36 @@ function TimePicker({ time, setTime }) {
         placeholder="00"
         options={hours}
         onChange={(option) => {
-          setTime({
-            ...time,
+          setTime((prevTime) => ({
+            ...prevTime,
             hour: option,
-          });
+          }));
         }}
-        value={time.hour}
-        defaultValue={() => {
-          const currentHour = new Date().getHours();
-          const displayHour = currentHour % 12 || 12;
-          return { value: displayHour, label: displayHour.toString() };
-        }}
+        value={time.hour}       
       />
       <CustomSelect
         className="w-10"
         placeholder="00"
         options={minutes}
         onChange={(option) => {
-          setTime({
-            ...time,
+          setTime((prevTime) => ({
+            ...prevTime,
             minute: option,
-          });
+          }));
         }}
         value={time.minute}
-        defaultValue={() => {
-          const currentMinute = new Date().getMinutes();
-          return {
-            value: currentMinute,
-            label: currentMinute.toString().padStart(2, "0"),
-          };
-        }}
       />
       <CustomSelect
         className="w-12"
         placeholder="AM"
         options={periods}
         onChange={(option) => {
-          setTime({
-            ...time,
+          setTime((prevTime) => ({
+            ...prevTime,
             period: option,
-          });
+          }));
         }}
         value={time.period}
-        defaultValue={() => {
-          const currentPeriod = new Date().getHours() >= 12 ? "PM" : "AM";
-          return { value: currentPeriod, label: currentPeriod };
-        }}
       />
     </div>
   );
