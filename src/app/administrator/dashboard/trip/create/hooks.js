@@ -33,6 +33,13 @@ export const useCreateTripForm = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  const convertToUTC = (date) => {
+    const dateTime = new Date(date);
+    return new Date(
+      dateTime.getTime() - dateTime.getTimezoneOffset() * 60000,
+    ).toISOString();
+  };
+
   const onSubmit = async (data) => {
     try {
       const formData = {
@@ -40,7 +47,7 @@ export const useCreateTripForm = () => {
         destination_city_id: data.destination_city_id.value,
         bus_id: data.bus_id.value,
         driver_id: data.driver_id.value,
-        datetime: data.datetime,
+        datetime: convertToUTC(data.datetime),
         price: parseFloat(data.price),
       };
 
@@ -49,15 +56,19 @@ export const useCreateTripForm = () => {
       console.log(json);
       // que el toast.success tenga información importante del viaje
       toast.success(
-        `
-        Viaje creado exitosamente:
-        Origen: ${sessionData?.user?.city?.name}
-        Destino: ${data.destination_city_id.label}
-        Bus: ${data.bus_id.label}
-        Conductor: ${data.driver_id.label}
-        Fecha: ${data.datetime}
-        Precio: ${data.price}
-        `,
+        <div>
+          <p className="text-sm opacity-90">
+            Viaje creado exitosamente:
+          </p>
+          <p className="">
+            Origen: {sessionData?.user?.city?.name}
+          </p>
+          <p>Destino: {data.destination_city_id.label}</p>
+          <p>Bus: {data.bus_id.label}</p>
+          <p>Conductor: {data.driver_id.label}</p>
+          <p>Fecha: {data.datetime.toString()}</p>
+          <p>Precio: {data.price}</p>
+        </div>,
         {
           duration: 2000,
         },

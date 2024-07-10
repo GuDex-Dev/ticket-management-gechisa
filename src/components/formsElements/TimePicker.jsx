@@ -18,12 +18,9 @@ function TimePicker({ time, setTime }) {
         placeholder="00"
         options={hours}
         onChange={(option) => {
-          const newTime = new Date(time.time);
-          newTime.setHours(option.value + (time.period.value === "PM" ? 12 : 0));
           setTime({
             ...time,
             hour: option,
-            time: newTime,
           });
         }}
         value={time.hour}
@@ -38,12 +35,9 @@ function TimePicker({ time, setTime }) {
         placeholder="00"
         options={minutes}
         onChange={(option) => {
-          const newTime = new Date(time.time);
-          newTime.setMinutes(option.value);
           setTime({
             ...time,
             minute: option,
-            time: newTime,
           });
         }}
         value={time.minute}
@@ -60,14 +54,9 @@ function TimePicker({ time, setTime }) {
         placeholder="AM"
         options={periods}
         onChange={(option) => {
-          const newTime = new Date(time.time);
-          const currentHour = newTime.getHours();
-          const newHour = option.value === "PM" ? currentHour + 12 : currentHour - 12;
-          newTime.setHours(newHour);
           setTime({
             ...time,
             period: option,
-            time: newTime,
           });
         }}
         value={time.period}

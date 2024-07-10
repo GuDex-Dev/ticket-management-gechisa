@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
 
 // Define the schema using zod
 const formSchema = z.object({
@@ -16,6 +17,10 @@ const formSchema = z.object({
     .refine((val) => val !== null, {
       message: "City is required",
     }),
+  price: z
+    .string()
+    .regex(/^\d+(\.\d{2})?$/, "Price must be in the format 5.00")
+    .nonempty("Price is required"),
 });
 
 const options = [
@@ -34,19 +39,22 @@ export default function Home() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       city: null,
+      price: "",
     },
   });
 
   const onSubmit = (data) => {
     // Extract the integer value for the API
     const cityValue = data.city?.value;
-    console.log(cityValue);
+    const priceValue = parseFloat(data.price);
+    console.log({ city: cityValue, price: priceValue });
     // Make your API call here
   };
 
   const handleReset = () => {
     reset({
       city: null,
+      price: "",
     });
   };
 
@@ -71,6 +79,19 @@ export default function Home() {
             </div>
           )}
         />
+        <div>
+          <label htmlFor="price">Price</label>
+          <Controller
+            name="price"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} type="number" step="0.01" placeholder="5.00" />
+            )}
+          />
+          {errors.price && (
+            <p style={{ color: "red" }}>{errors.price.message}</p>
+          )}
+        </div>
         <button type="submit">Submit</button>
         <button type="button" onClick={handleReset}>
           Reset
