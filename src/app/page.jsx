@@ -13,6 +13,9 @@ function HomePage() {
       <Link href="/administrator/dashboard">
         <Button className="w-full text-2xl font-bold">Admin</Button>
       </Link>
+      <Link href="/gerent/dashboard">
+        <Button className="w-full text-2xl font-bold">Gerente</Button>
+      </Link>
     </div>
   );
 }

@@ -218,7 +218,9 @@ function Sidebar() {
                   ? "CLIENTE"
                   : role === ROLES.SALESPERSON
                     ? "VENDEDOR"
-                    : ""}
+                    : role === ROLES.GERENT
+                      ? "GERENTE"
+                      : "ROL NO ASIGNADO"}
             </Link>
           </SidebarClose>
         </H1>

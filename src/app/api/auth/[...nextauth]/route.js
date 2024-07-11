@@ -42,6 +42,13 @@ const authOptions = {
               "spAdministrator_Login"
             );
             break;
+          case ROLES.GERENT:
+            result = await executeProcedure(
+              credentials,
+              inputs,
+              "spGerent_Login"
+            );
+            break;
           default:
             throw new Error("Invalid role");
         }

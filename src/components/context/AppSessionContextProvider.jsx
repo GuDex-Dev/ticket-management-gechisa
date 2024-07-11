@@ -44,7 +44,8 @@ export default function AppSessionContextProvider({ children, session }) {
       return "Client";
     } else if (
       pathname.includes("administrator") ||
-      pathname.includes("salesperson")
+      pathname.includes("salesperson") ||
+      pathname.includes("gerent")
     ) {
       return "Employee";
     } else {

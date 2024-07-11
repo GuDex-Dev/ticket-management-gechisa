@@ -9,6 +9,7 @@ export const ROLES = {
   CLIENT: "Client",
   SALESPERSON: "Salesperson",
   ADMINISTRATOR: "Administrator",
+  GERENT: "Gerent",
 };
 
 export const ROUTES = {
