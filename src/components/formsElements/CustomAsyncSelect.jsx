@@ -9,8 +9,17 @@ function CustomAsyncSelect({
   isLoading,
   maxMenuHeight,
   field,
+  onChange,
 }) {
   useAppContext();
+
+  if (onChange) {
+    const onChangeField = field.onChange;
+    field.onChange = (selectedOption) => {
+      onChangeField(selectedOption);
+      onChange(selectedOption);
+    };
+  }
 
   return (
     <AsyncSelect

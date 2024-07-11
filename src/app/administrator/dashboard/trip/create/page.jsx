@@ -26,9 +26,11 @@ function CreateTripPage() {
     form,
     options,
     isLoading,
+    isPriceDisabled,
     loadDestinationCityOptions,
     loadBusOptions,
     loadDriverOptions,
+    handleDestinationCitySelect,
     onSubmit,
   } = useCreateTripForm();
 
@@ -69,6 +71,9 @@ function CreateTripPage() {
                       loadOptions={loadDestinationCityOptions}
                       defaultOptions={isLoading ? [] : options.destination_city}
                       isLoading={isLoading}
+                      onChange={(selectedOption) =>
+                        handleDestinationCitySelect(selectedOption)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -142,6 +147,7 @@ function CreateTripPage() {
                       type="number"
                       step="0.01"
                       placholder="5.00"
+                      disabled={isPriceDisabled}
                     />
                   </FormControl>
                   <FormMessage />

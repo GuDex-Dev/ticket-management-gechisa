@@ -1,11 +1,33 @@
-export const apiGetOptions = async (origin_city_id) => {
+export const apiGetOptions = async (data) => {
   try {
     const res = await fetch("/api/administrator/create-trip/get-options", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ origin_city_id }),
+      body: JSON.stringify(data),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json.message);
+    }
+
+    return json;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const apiGetDefaultPrice = async (data) => {
+  try {
+    const res = await fetch("/api/administrator/create-trip/get-default-price", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     });
 
     const json = await res.json();
@@ -40,4 +62,4 @@ export const apiCreateTrip = async (data) => {
   } catch (error) {
     throw new Error(error.message);
   }
-}
+};
