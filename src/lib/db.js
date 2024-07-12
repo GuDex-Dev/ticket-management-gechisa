@@ -31,13 +31,16 @@ async function getPool() {
   return poolPromise;
 }
 
-async function executeProcedure(data, inputs, procedureName) {
+async function executeProcedure(data = null, inputs = null, procedureName) {
   const pool = await getPool();
   try {
     const request = pool.request();
-    Object.keys(inputs).forEach((key) => {
-      request.input(key, data[inputs[key]]);
-    });
+
+    if (data !== null) {
+      Object.keys(inputs).forEach((key) => {
+        request.input(key, data[inputs[key]]);
+      });
+    }
     const result = await request.execute(procedureName);
     return result;
   } catch (error) {

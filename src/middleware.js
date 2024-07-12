@@ -31,12 +31,24 @@ export default withAuth(
       return NextResponse.redirect(url);
     }
 
+    if (pathname.startsWith("/gerent/auth/login") && role === ROLES.GERENT) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/gerent/dashboard";
+      return NextResponse.redirect(url);
+    }
+
     if (
       pathname.startsWith("/salesperson/dashboard") &&
       role !== ROLES.SALESPERSON
     ) {
       const url = req.nextUrl.clone();
       url.pathname = "/salesperson/auth/login";
+      return NextResponse.redirect(url);
+    }
+
+    if (pathname.startsWith("/gerent/dashboard") && role !== ROLES.GERENT) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/gerent/auth/login";
       return NextResponse.redirect(url);
     }
 
@@ -65,5 +77,5 @@ export default withAuth(
         return true;
       },
     },
-  }
+  },
 );
