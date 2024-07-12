@@ -21,6 +21,15 @@ export const ROUTES = {
           "/create": "Crear Viaje",
         },
       },
+      "/reports": {
+        name: "Informes",
+        children: {
+          "/weekly-sales": "Ventas Semanales",
+          "/monthly-sales": "Ventas Mensuales",
+          "/weekly-sales-by-salesperson": "Ventas Semanales por Vendedor",
+          "/sales-ranking": "Ranking Vendedores",
+        },
+      },
     },
   },
   "/gerent/dashboard": {
