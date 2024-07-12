@@ -1,7 +1,7 @@
 // api.js
 export const apiGetAdministrator = async () => {
   try {
-    const res = await fetch("/api/gerent/administrator/show", {
+    const res = await fetch("/api/gerent/administrators/show", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

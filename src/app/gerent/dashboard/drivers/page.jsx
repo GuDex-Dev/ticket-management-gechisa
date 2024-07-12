@@ -17,70 +17,73 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useDrivers } from "./hooks"; // ! Change
+import { useDrivers } from "./hooks";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const columns = [
   {
-    accessorKey: " ID", // ! Change
-    header: " ID", // ! Change
-    cell: ({ row }) => <div>{row.getValue(" ID")}</div>, // ! Change
+    accessorKey: "ID",
+    header: "ID",
+    cell: ({ row }) => <div>{row.getValue("ID")}</div>,
   },
   {
-    accessorKey: "Licencia", // ! Change
-    header: "Licencia", // ! Change
-    cell: ({ row }) => <div>{row.getValue("Licencia")}</div>, // ! Change
+    accessorKey: "Licencia",
+    header: "Licencia",
+    cell: ({ row }) => <div>{row.getValue("Licencia")}</div>,
   },
   {
-    accessorKey: "Nombre", // ! Change
-    header: "Nombre", // ! Change
-    cell: ({ row }) => <div>{row.getValue("Nombre")}</div>, // ! Change
-  },
-  ,
-  {
-    accessorKey: "Apellido", // ! Change
-    header: "Apellido", // ! Change
-    cell: ({ row }) => <div>{row.getValue("Apellido")}</div>, // ! Change
+    accessorKey: "Nombre",
+    header: "Nombre",
+    cell: ({ row }) => <div>{row.getValue("Nombre")}</div>,
   },
   ,
   {
-    accessorKey: "Correo", // ! Change
-    header: "Correo", // ! Change
-    cell: ({ row }) => <div>{row.getValue("Correo")}</div>, // ! Change
+    accessorKey: "Apellido",
+    header: "Apellido",
+    cell: ({ row }) => <div>{row.getValue("Apellido")}</div>,
   },
   ,
   {
-    accessorKey: "Telefono", // ! Change
-    header: "Telefono", // ! Change
-    cell: ({ row }) => <div>{row.getValue("Telefono")}</div>, // ! Change
+    accessorKey: "Correo",
+    header: "Correo",
+    cell: ({ row }) => <div>{row.getValue("Correo")}</div>,
   },
-  {
-    accessorKey: "Direccion", // ! Change
-    header: "Direccion", // ! Change
-    cell: ({ row }) => <div>{row.getValue("Direccion")}</div>, // ! Change
-  }
   ,
   {
-    accessorKey: "Estado", // ! Change
-    header: "Estado", // ! Change
-    cell: ({ row }) => <div>{row.getValue("Estado")}</div>, // ! Change
-  }
+    accessorKey: "Telefono",
+    header: "Telefono",
+    cell: ({ row }) => <div>{row.getValue("Telefono")}</div>,
+  },
+  {
+    accessorKey: "Direccion",
+    header: "Direccion",
+    cell: ({ row }) => <div>{row.getValue("Direccion")}</div>,
+  },
+  {
+    accessorKey: "Estado",
+    header: "Estado",
+    cell: ({ row }) => <div>{row.getValue("Estado")}</div>,
+  },
 ];
 
-function DriverTable() { // ! Change
-  const { driver, isLoading, error } = useDrivers(); // ! Change
+function DriverTable() {
+  const { driver, isLoading, error } = useDrivers();
   const [filter, setFilter] = useState("");
 
-  const filteredDriver = useMemo(() => { // ! Change
-    return driver.filter((driver) => { // ! Change
-      const search = driver.Nombre.toString().toLowerCase() + driver.ID.toString()+ driver.apellido.toString()+ driver.licencia.toString(); // ! Change
+  const filteredDriver = useMemo(() => {
+    return driver.filter((driver) => {
+      const search =
+        driver.Nombre.toString().toLowerCase() +
+        driver.ID.toString().toLowerCase() +
+        driver.Apellido.toString().toLowerCase() +
+        driver.Licencia.toString().toLowerCase();
       return search.includes(filter.toLowerCase());
     });
   }, [driver, filter]);
 
   const table = useReactTable({
-    data: filteredDriver, // ! Change
+    data: filteredDriver,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -102,8 +105,8 @@ function DriverTable() { // ! Change
           onChange={(e) => setFilter(e.target.value)}
           className="max-w-sm"
         />
-        <Link href="/gerent/dashboard/administrator/create"> // ! Change
-          <Button className="w-full font-bold">Crear Ciudad</Button> // ! Change
+        <Link href="/gerent/dashboard/drivers/register">
+          <Button className="w-full font-bold">Crear Conductor</Button>
         </Link>
       </div>
       <div className="rounded-md border">
@@ -155,4 +158,4 @@ function DriverTable() { // ! Change
   );
 }
 
-export default AdministratorTable;
+export default DriverTable;

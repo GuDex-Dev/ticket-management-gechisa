@@ -38,20 +38,42 @@ export const ROUTES = {
       },
     },
   },
-  "/salesperson/dashboard": {
+  "/gerent/dashboard": {
     children: {
-      "/trip": {
-        name: "Viajes",
+      "/cities": {
+        name: "Ciudades",
         children: {
-          "/create": "Crear Viaje",
-          "/edit": "Editar Viaje",
-          "/view": {
-            name: "Ver Viaje",
-            children: {
-              "/passenger": "Pasajeros",
-              "/route": "Ruta",
-            },
-          },
+          "/register": "Crear Ciudad",
+        },
+      },
+      "/routes": {
+        name: "Rutas",
+        children: {
+          "/register": "Crear Ruta",
+        },
+      },
+      "/buses": {
+        name: "Buses",
+        children: {
+          "/register": "Crear Bus",
+        },
+      },
+      "/drivers": {
+        name: "Conductores",
+        children: {
+          "/register": "Crear Conductor",
+        },
+      },
+      administrators: {
+        name: "Administradores",
+        children: {
+          "/register": "Crear Administrador",
+        },
+      },
+      salespersons: {
+        name: "Vendedores",
+        children: {
+          "/register": "Crear Vendedor",
         },
       },
     },

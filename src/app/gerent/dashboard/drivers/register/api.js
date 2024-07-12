@@ -1,7 +1,7 @@
 // api.js
 export const apiRegisterDriver = async (data) => {
   try {
-    const res = await fetch("/api/administrator/register-driver", {
+    const res = await fetch("/api/gerent/drivers/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

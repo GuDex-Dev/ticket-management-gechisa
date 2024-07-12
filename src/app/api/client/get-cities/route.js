@@ -4,7 +4,8 @@ const db = require("@/lib/db");
 
 export async function GET(req, res) {
   try {
-    const PROCEDURE_NAME = "spGerent_Show_Drivers";
+
+    const PROCEDURE_NAME = "spClient_GetCities";
 
     const result = await db.executeProcedure(null, null, PROCEDURE_NAME);
 

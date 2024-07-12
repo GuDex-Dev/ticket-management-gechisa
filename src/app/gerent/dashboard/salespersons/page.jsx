@@ -48,9 +48,9 @@ const columns = [
     cell: ({ row }) => <div>{row.getValue("Correo")}</div>, 
   },
   {
-    accessorKey: "Teléfono", 
-    header: "Teléfono", 
-    cell: ({ row }) => <div>{row.getValue("Teléfono")}</div>, 
+    accessorKey: "Telefono", 
+    header: "Telefono", 
+    cell: ({ row }) => <div>{row.getValue("Telefono")}</div>, 
   },
   {
     accessorKey: "Direccion", 
@@ -70,7 +70,7 @@ function SalespersonsTable() {
 
   const filteredSalespersons = useMemo(() => { 
     return salespersons.filter((salesperson) => { 
-      const search = salesperson.Direccion.toString().toLowerCase() + salesperson.Teléfono.toString().toLowerCase() + salesperson.ID.toString().toLowerCase() + salesperson.Nombre.toString().toLowerCase() + salesperson.Apellido.toString().toLowerCase() + salesperson.Ciudad.toString().toLowerCase(); 
+      const search = salesperson.Direccion.toString().toLowerCase() + salesperson.Telefono.toString().toLowerCase() + salesperson.ID.toString().toLowerCase() + salesperson.Nombre.toString().toLowerCase() + salesperson.Apellido.toString().toLowerCase() + salesperson.Ciudad.toString().toLowerCase(); 
       return search.includes(filter.toLowerCase());
     });
   }, [salespersons, filter]);

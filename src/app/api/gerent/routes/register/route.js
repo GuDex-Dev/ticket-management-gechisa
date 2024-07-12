@@ -26,7 +26,6 @@ export async function POST(req, res) {
       FK_ID_Origin_City: "FK_ID_Origin_City",
       FK_ID_Destination_City: "FK_ID_Destination_City",
       default_price: "default_price",
-      seats_count: "seats_count",
     };
 
     const PROCEDURE_NAME = "spGerent_Register_Route";

@@ -23,26 +23,20 @@ export async function POST(req, res) {
     });
 
     const INPUTS = {
-      DNI_Person: "DNI_Person",
-      first_name: "first_name",
-      last_name: "last_name",
-      email: "email",
-      address: "address",
-      phone: "phone",
-      license_number: "license_number",
+      ID_origin_city: "ID_origin_city",
     };
 
-    const PROCEDURE_NAME = "spGerent_Register_Driver";
+    const PROCEDURE_NAME = "spClient_GetDestinations";
 
     const result = await db.executeProcedure(data, INPUTS, PROCEDURE_NAME);
 
     if (result.recordset.length > 0) {
-      if (result.recordset[0].StatusCode < 0) {
-        const { StatusCode, ErrorMessage } = result.recordset[0];
+      if (result.recordset[0].ErrorNumber) {
+        const { ErrorNumber, ErrorMessage } = result.recordset[0];
         return NextResponse.json(
           {
             ok: false,
-            number: StatusCode,
+            number: ErrorNumber,
             message: ErrorMessage,
           },
           { status: 400 },
@@ -51,7 +45,7 @@ export async function POST(req, res) {
         return NextResponse.json(
           {
             ok: true,
-            message: result.recordset[0].Message,
+            data: result.recordset,
           },
           { status: 200 },
         );

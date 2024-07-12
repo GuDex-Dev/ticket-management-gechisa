@@ -37,6 +37,12 @@ export default withAuth(
       return NextResponse.redirect(url);
     }
 
+    if (pathname.startsWith("/client/dashboard") && role !== ROLES.CLIENT) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/client/auth/login";
+      return NextResponse.redirect(url);
+    }
+
     if (
       pathname.startsWith("/salesperson/dashboard") &&
       role !== ROLES.SALESPERSON

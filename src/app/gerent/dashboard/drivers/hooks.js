@@ -1,18 +1,18 @@
 // hooks.js
 import { useState, useEffect } from "react";
-import { apiGetDrivers } from "./api"; // ! Change
+import { apiGetDrivers } from "./api"; 
 
-export const useDrivers = () => { // ! Change
-  const [driver, setDriver] = useState([]); // ! Change
+export const useDrivers = () => { 
+  const [driver, setDriver] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDriver = async () => { // ! Change
+    const fetchDriver = async () => { 
       try {
-        const response = await apiGetDrivers(); // ! Change
+        const response = await apiGetDrivers(); 
         if (response.ok) {
-          setDriver(response.data); // ! Change
+          setDriver(response.data); 
         } else {
           throw new Error(response.message);
         }
@@ -23,8 +23,8 @@ export const useDrivers = () => { // ! Change
       }
     };
 
-    fetchDriver(); // ! Change
+    fetchDriver(); 
   }, []);
 
-  return {driver, isLoading, error }; // ! Change
+  return {driver, isLoading, error }; 
 };

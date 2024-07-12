@@ -34,75 +34,6 @@ export const useCreateTripForm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isPriceDisabled, setIsPriceDisabled] = useState(true);
 
-  const convertToUTC = (date) => {
-    const dateTime = new Date(date);
-    return new Date(
-      dateTime.getTime() - dateTime.getTimezoneOffset() * 60000,
-    ).toISOString();
-  };
-
-  const onSubmit = async (data) => {
-    try {
-      const formData = {
-        origin_city_id: data.origin_city_id.value,
-        destination_city_id: data.destination_city_id.value,
-        bus_id: data.bus_id.value,
-        driver_id: data.driver_id.value,
-        datetime: convertToUTC(data.datetime),
-        price: parseFloat(data.price),
-      };
-
-      const json = await apiCreateTrip(formData);
-
-      toast.success(
-        <div>
-          <p className="text-sm opacity-90 font-bold">Viaje creado exitosamente:</p>
-          <p className="">Origen: {sessionData?.user?.city?.name}</p>
-          <p>Destino: {data.destination_city_id.label}</p>
-          <p>Bus: {data.bus_id.label}</p>
-          <p>Conductor: {data.driver_id.label}</p>
-          <p>Fecha: {data.datetime.toString()}</p>
-          <p>Precio: {data.price}</p>
-        </div>,
-        {
-          duration: 2000,
-        },
-      );
-      form.reset(defaultValues);
-      setIsPriceDisabled(true); // Disable price field on submit
-    } catch (error) {
-      console.error("Error during trip creation:", error);
-      toast.error(error.message, {
-        duration: 2000,
-      });
-    }
-  };
-
-  const handleDestinationCitySelect = async (selectedOption) => {
-    try {
-      const originCityId = form.getValues("origin_city_id").value;
-      const destinationCityId = selectedOption.value;
-
-      const result = await apiGetDefaultPrice({
-        origin_city_id: originCityId,
-        destination_city_id: destinationCityId,
-      });
-
-      if (result.ok) {
-        form.setValue("price", result.data.price.toString());
-        setIsPriceDisabled(false); // Enable price field after receiving price
-      } else {
-        throw new Error(result.message);
-      }
-    } catch (error) {
-      console.error("Error getting default price:", error);
-      toast.error(error.message, {
-        duration: 2000,
-      });
-      setIsPriceDisabled(true); // Keep price field disabled in case of error
-    }
-  };
-
   useEffect(() => {
     const loadOptions = async () => {
       try {
@@ -136,6 +67,77 @@ export const useCreateTripForm = () => {
     };
     loadOptions();
   }, [sessionData]);
+
+  const handleDestinationCitySelect = async (selectedOption) => {
+    try {
+      const originCityId = form.getValues("origin_city_id").value;
+      const destinationCityId = selectedOption.value;
+
+      const result = await apiGetDefaultPrice({
+        origin_city_id: originCityId,
+        destination_city_id: destinationCityId,
+      });
+
+      if (result.ok) {
+        form.setValue("price", result.data.price.toString());
+        setIsPriceDisabled(false); // Enable price field after receiving price
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error("Error getting default price:", error);
+      toast.error(error.message, {
+        duration: 2000,
+      });
+      setIsPriceDisabled(true); // Keep price field disabled in case of error
+    }
+  };
+
+  const convertToUTC = (date) => {
+    const dateTime = new Date(date);
+    return new Date(
+      dateTime.getTime() - dateTime.getTimezoneOffset() * 60000,
+    ).toISOString();
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = {
+        origin_city_id: data.origin_city_id.value,
+        destination_city_id: data.destination_city_id.value,
+        bus_id: data.bus_id.value,
+        driver_id: data.driver_id.value,
+        datetime: convertToUTC(data.datetime),
+        price: parseFloat(data.price),
+      };
+
+      const json = await apiCreateTrip(formData);
+
+      toast.success(
+        <div>
+          <p className="text-sm font-bold opacity-90">
+            Viaje creado exitosamente:
+          </p>
+          <p className="">Origen: {sessionData?.user?.city?.name}</p>
+          <p>Destino: {data.destination_city_id.label}</p>
+          <p>Bus: {data.bus_id.label}</p>
+          <p>Conductor: {data.driver_id.label}</p>
+          <p>Fecha: {data.datetime.toString()}</p>
+          <p>Precio: {data.price}</p>
+        </div>,
+        {
+          duration: 2000,
+        },
+      );
+      form.reset(defaultValues);
+      setIsPriceDisabled(true); // Disable price field on submit
+    } catch (error) {
+      console.error("Error during trip creation:", error);
+      toast.error(error.message, {
+        duration: 2000,
+      });
+    }
+  };
 
   const loadOptionsCallback = (options, inputValue, callback) => {
     const filteredOptions = options.filter((option) =>

@@ -17,70 +17,72 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useAdminsitrator } from "./hooks"; 
+import { useAdminsitrator } from "./hooks";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const columns = [
   {
-    accessorKey: " ID", 
-    header: " ID", 
-    cell: ({ row }) => <div>{row.getValue(" ID")}</div>, 
+    accessorKey: "ID",
+    header: "ID",
+    cell: ({ row }) => <div>{row.getValue("ID")}</div>,
   },
   {
-    accessorKey: "Ciudad", 
-    header: "Ciudad", 
-    cell: ({ row }) => <div>{row.getValue("Ciudad")}</div>, 
+    accessorKey: "Ciudad",
+    header: "Ciudad",
+    cell: ({ row }) => <div>{row.getValue("Ciudad")}</div>,
   },
   {
-    accessorKey: "Nombre", 
-    header: "Nombre", 
-    cell: ({ row }) => <div>{row.getValue("Nombre")}</div>, 
-  },
-  ,
-  {
-    accessorKey: "Apellido", 
-    header: "Apellido", 
-    cell: ({ row }) => <div>{row.getValue("Apellido")}</div>, 
+    accessorKey: "Nombre",
+    header: "Nombre",
+    cell: ({ row }) => <div>{row.getValue("Nombre")}</div>,
   },
   ,
   {
-    accessorKey: "Correo", 
-    header: "Correo", 
-    cell: ({ row }) => <div>{row.getValue("Correo")}</div>, 
+    accessorKey: "Apellido",
+    header: "Apellido",
+    cell: ({ row }) => <div>{row.getValue("Apellido")}</div>,
   },
   ,
   {
-    accessorKey: "Telefono", 
-    header: "Telefono", 
-    cell: ({ row }) => <div>{row.getValue("Telefono")}</div>, 
+    accessorKey: "Correo",
+    header: "Correo",
+    cell: ({ row }) => <div>{row.getValue("Correo")}</div>,
   },
-  {
-    accessorKey: "Direccion", 
-    header: "Direccion", 
-    cell: ({ row }) => <div>{row.getValue("Direccion")}</div>, 
-  }
   ,
   {
-    accessorKey: "Estado", 
-    header: "Estado", 
-    cell: ({ row }) => <div>{row.getValue("Estado")}</div>, 
-  }
+    accessorKey: "Telefono",
+    header: "Telefono",
+    cell: ({ row }) => <div>{row.getValue("Telefono")}</div>,
+  },
+  {
+    accessorKey: "Direccion",
+    header: "Direccion",
+    cell: ({ row }) => <div>{row.getValue("Direccion")}</div>,
+  },
+  {
+    accessorKey: "Estado",
+    header: "Estado",
+    cell: ({ row }) => <div>{row.getValue("Estado")}</div>,
+  },
 ];
 
-function AdministratorTable() { 
-  const { administrator, isLoading, error } = useAdminsitrator(); 
+function AdministratorTable() {
+  const { administrator, isLoading, error } = useAdminsitrator();
   const [filter, setFilter] = useState("");
 
-  const filteredAdministrator = useMemo(() => { 
-    return administrator.filter((administrator) => { 
-      const search = administrator.Nombre.toString().toLowerCase() + administrator.ID.toString()+ administrator.apellido.toString(); 
+  const filteredAdministrator = useMemo(() => {
+    return administrator.filter((administrator) => {
+      const search =
+        administrator.Nombre.toString().toLowerCase() +
+        administrator.ID.toString().toLowerCase() +
+        administrator.Apellido.toString().toLowerCase();
       return search.includes(filter.toLowerCase());
     });
   }, [administrator, filter]);
 
   const table = useReactTable({
-    data: filteredAdministrator, 
+    data: filteredAdministrator,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -102,8 +104,8 @@ function AdministratorTable() {
           onChange={(e) => setFilter(e.target.value)}
           className="max-w-sm"
         />
-        <Link href="/gerent/dashboard/administrator/create"> 
-          <Button className="w-full font-bold">Crear Ciudad</Button> 
+        <Link href="/gerent/dashboard/administrators/register">
+          <Button className="w-full font-bold">Crear Administrador</Button>
         </Link>
       </div>
       <div className="rounded-md border">

@@ -1,7 +1,7 @@
 // api.js
-export const apiGetDrivers = async () => { // ! Change
+export const apiGetDrivers = async () => { 
   try {
-    const res = await fetch("/api/gerent/drivers/show", { // ! Change
+    const res = await fetch("/api/gerent/drivers/show", { 
       method: "GET",
       headers: {
         "Content-Type": "application/json",
