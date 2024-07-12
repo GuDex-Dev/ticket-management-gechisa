@@ -10,14 +10,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -38,7 +31,15 @@ export function DataTable({ columns, data }) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (newRowSelection) => {
+      // Deseleccionar todas las filas antes de seleccionar una nueva
+      if (Object.keys(newRowSelection).length > 1) {
+        const firstKey = Object.keys(newRowSelection)[0];
+        setRowSelection({ [firstKey]: true });
+      } else {
+        setRowSelection(newRowSelection);
+      }
+    },
     state: {
       sorting,
       columnFilters,
@@ -86,10 +87,7 @@ export function DataTable({ columns, data }) {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>

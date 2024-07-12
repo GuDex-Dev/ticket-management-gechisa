@@ -9,6 +9,7 @@ import {
   apiBuyTicket,
 } from "./api";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 export const useBuyTicketForm = () => {
   const form = useForm({
@@ -16,9 +17,11 @@ export const useBuyTicketForm = () => {
     defaultValues: {
       origin_city_id: null,
       destination_city_id: null,
-      date: new Date(),
+      date: new Date(new Date().setHours(0, 0, 0, 0)),
     },
   });
+
+  const { data: sessionData } = useSession();
 
   const [options, setOptions] = useState({
     origin_city: [],
@@ -27,8 +30,8 @@ export const useBuyTicketForm = () => {
   const [trips, setTrips] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDestinationDisabled, setIsDestinationDisabled] = useState(true);
-  const [isDateDisabled, setIsDateDisabled] = useState(true);
-  const [isUpdateDisabled, setIsUpdateDisabled] = useState(true);
+
+  const [selectedTrip, setSelectedTrip] = useState(null);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -73,13 +76,9 @@ export const useBuyTicketForm = () => {
       if (formattedOptions.length === 0) {
         toast.error("No hay destinos disponibles para esta ciudad");
         setIsDestinationDisabled(true);
-        setIsDateDisabled(true);
-        setIsUpdateDisabled(true);
         return;
       }
       setIsDestinationDisabled(false);
-      setIsDateDisabled(true);
-      setIsUpdateDisabled(true);
     } catch (error) {
       toast.error("No hay destinos disponibles para esta ciudad");
       console.error("Error loading destination cities:", error);
@@ -88,32 +87,32 @@ export const useBuyTicketForm = () => {
 
   const handleOriginCitySelect = async (selectedOption) => {
     setIsDestinationDisabled(true);
-    setIsDateDisabled(true);
-    setIsUpdateDisabled(true);
     setTrips([]);
     form.reset({
       origin_city_id: selectedOption,
       destination_city_id: null,
-      date: new Date(),
+      date: form.getValues("date"),
     });
     await updateDestinationCityOptions(selectedOption.value);
   };
 
-  const handleDestinationCitySelect = (selectedOption) => {
-    setIsDateDisabled(false);
-    setIsUpdateDisabled(false);
+  const handleDestinationCitySelect = async (selectedOption) => {
     setTrips([]);
+    await updateTripTable(form.getValues());
   };
 
   const updateTripTable = async (data) => {
     try {
+      console.log(convertToUTC(data.date));
       const result = await apiGetTripsByRouteAndDate(
         data.origin_city_id.value,
         data.destination_city_id.value,
-        data.date.toISOString().split("T")[0],
+        convertToUTC(data.date),
       );
       setTrips(result.data);
     } catch (error) {
+      setTrips([]);
+      toast.error("No hay viajes disponibles para esta ruta y fecha");
       console.error("Error getting trips:", error);
     }
   };
@@ -125,14 +124,29 @@ export const useBuyTicketForm = () => {
     callback(filteredOptions);
   };
 
+  const convertToUTC = (date) => {
+    const dateTime = new Date(date);
+    return new Date(
+      dateTime.getTime() - dateTime.getTimezoneOffset() * 60000,
+    ).toISOString();
+  };
+
+  const handleBuyTicket = async (tripId) => {
+    try {
+      await apiBuyTicket(sessionData?.user?.id, tripId);
+      toast.success("Boleto comprado exitosamente");
+    } catch (error) {
+      toast.error("Error al comprar boleto");
+      console.error("Error buying ticket:", error);
+    }
+  };
+
   return {
     form,
     options,
     trips,
     isLoading,
     isDestinationDisabled,
-    isDateDisabled,
-    isUpdateDisabled,
     handleOriginCitySelect,
     handleDestinationCitySelect,
     loadOriginCityOptions: (inputValue, callback) =>
@@ -140,5 +154,8 @@ export const useBuyTicketForm = () => {
     loadDestinationCityOptions: (inputValue, callback) =>
       loadOptionsCallback(options.destination_city, inputValue, callback),
     updateTripTable,
+    handleBuyTicket,
+    selectedTrip,
+    setSelectedTrip,
   };
 };

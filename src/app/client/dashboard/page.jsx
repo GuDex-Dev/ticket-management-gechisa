@@ -23,23 +23,27 @@ function BuyTicketPage() {
     trips,
     isLoading,
     isDestinationDisabled,
-    isDateDisabled,
-    isUpdateDisabled,
     loadOriginCityOptions,
     loadDestinationCityOptions,
     handleOriginCitySelect,
     handleDestinationCitySelect,
     updateTripTable,
+    handleBuyTicket,
+    selectedTrip,
+    setSelectedTrip,
   } = useBuyTicketForm();
 
   return (
-    <Card className="mx-auto w-auto min-w-[calc(35vw)] max-w-max">
+    <Card className="mx-auto w-10/12 min-w-[calc(35vw)]">
       <CardHeader>
         <CardTitle>Comprar Boleto</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(updateTripTable)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="origin_city_id"
@@ -83,35 +87,51 @@ function BuyTicketPage() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fecha</FormLabel>
-                  <FormControl>
-                    <DatePicker {...field}/>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Buscar Viajes</Button>
-            <Button
-              type="button"
-              disabled={isUpdateDisabled}
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              Actualizar
-            </Button>
+            <div className="flex justify-between">
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => {
+                  const { onChange: onChangeField, ...rest } = field;
+
+                  return (
+                    <FormItem>
+                      <FormLabel className="mr-4">Fecha:</FormLabel>
+                      <FormControl>
+                        <DatePicker
+                          {...rest}
+                          onChange={(value) => {
+                            onChangeField(value);
+                            if (
+                              form.getValues("origin_city_id") &&
+                              form.getValues("destination_city_id")
+                            ) {
+                              updateTripTable(form.getValues());
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <Button type="submit" className="mr-8">
+                Actualizar
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
-      <DataTable columns={columns} data={trips} />
+      <DataTable columns={columns} data={trips} onRowSelect={setSelectedTrip} />
       <Button
         className="mt-4 w-full"
         onClick={() => {
-          /* lógica para comprar boleto */
+          if (selectedTrip) {
+            handleBuyTicket(selectedTrip.ID);
+          } else {
+            alert("Por favor, seleccione un viaje.");
+          }
         }}
       >
         Comprar Boleto

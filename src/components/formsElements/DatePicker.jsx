@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 
-function DatePicker({ date, setDate }) {
+function DatePicker({ value, onChange }) {
   useAppContext();
 
   return (
@@ -18,15 +18,15 @@ function DatePicker({ date, setDate }) {
         <Button
           variant={"outline"}
           className={`w-36 justify-start text-left font-normal md:text-base ${
-            !date ? "text-muted-foreground" : ""
+            !value ? "text-muted-foreground" : ""
           }`}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "dd/MM/yyyy") : <span>Selecciona</span>}
+          {value ? format(value, "dd/MM/yyyy") : <span>Selecciona</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar selected={date} mode="single" onSelect={setDate} />
+        <Calendar selected={value} mode="single" onSelect={onChange} />
       </PopoverContent>
     </Popover>
   );

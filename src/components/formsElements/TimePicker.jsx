@@ -1,6 +1,6 @@
 import CustomSelect from "@/components/formsElements/CustomSelect";
 
-function TimePicker({ time, setTime }) {
+function TimePicker({ value, onChange }) {
   const hours = Array.from({ length: 12 }, (_, i) => ({
     value: i + 1,
     label: (i + 1).toString(),
@@ -18,36 +18,36 @@ function TimePicker({ time, setTime }) {
         placeholder="00"
         options={hours}
         onChange={(option) => {
-          setTime((prevTime) => ({
+          onChange((prevTime) => ({
             ...prevTime,
             hour: option,
           }));
         }}
-        value={time.hour}       
+        value={value.hour}
       />
       <CustomSelect
         className="w-10"
         placeholder="00"
         options={minutes}
         onChange={(option) => {
-          setTime((prevTime) => ({
+          onChange((prevTime) => ({
             ...prevTime,
             minute: option,
           }));
         }}
-        value={time.minute}
+        value={value.minute}
       />
       <CustomSelect
         className="w-12"
         placeholder="AM"
         options={periods}
         onChange={(option) => {
-          setTime((prevTime) => ({
+          onChange((prevTime) => ({
             ...prevTime,
             period: option,
           }));
         }}
-        value={time.period}
+        value={value.period}
       />
     </div>
   );

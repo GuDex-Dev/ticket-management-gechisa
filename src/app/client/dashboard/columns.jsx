@@ -31,13 +31,15 @@ export const columns = [
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(value)}
       />
     ),
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(value)}
+        onCheckedChange={(value) => {
+          table.toggleAllRowsSelected(false);
+          row.toggleSelected(value);
+        }}
       />
     ),
   },
