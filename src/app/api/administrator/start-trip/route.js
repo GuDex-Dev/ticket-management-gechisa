@@ -2,11 +2,33 @@ import { NextResponse } from "next/server";
 
 const db = require("@/lib/db");
 
-export async function GET(req, res) {
+export async function POST(req, res) {
   try {
-    const PROCEDURE_NAME = "spGerent_Show_Drivers";
+    const data = await req.json();
 
-    const result = await db.executeProcedure(null, null, PROCEDURE_NAME);
+    if (!data || typeof data !== "object") {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: "Invalid data",
+        },
+        { status: 400 },
+      );
+    }
+
+    Object.keys(data).forEach((key) => {
+      if (data[key] === "") {
+        data[key] = null;
+      }
+    });
+
+    const INPUTS = {
+      ID_Trip: "ID_Trip",
+    };
+
+    const PROCEDURE_NAME = "spAdministrator_Trip_Start";
+
+    const result = await db.executeProcedure(data, INPUTS, PROCEDURE_NAME);
 
     if (result.recordset.length > 0) {
       if (result.recordset[0].StatusCode < 0) {
@@ -20,10 +42,11 @@ export async function GET(req, res) {
           { status: 400 },
         );
       } else {
+        console.log(result)
         return NextResponse.json(
           {
             ok: true,
-            data: result.recordset,
+            data: result.recordset[0],
           },
           { status: 200 },
         );

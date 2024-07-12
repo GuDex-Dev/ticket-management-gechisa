@@ -2,11 +2,34 @@ import { NextResponse } from "next/server";
 
 const db = require("@/lib/db");
 
-export async function GET(req, res) {
+export async function POST(req, res) {
   try {
-    const PROCEDURE_NAME = "spGerent_Show_Drivers";
+    const data = await req.json();
 
-    const result = await db.executeProcedure(null, null, PROCEDURE_NAME);
+    if (!data || typeof data !== "object") {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: "Invalid data",
+        },
+        { status: 400 },
+      );
+    }
+
+    Object.keys(data).forEach((key) => {
+      if (data[key] === "") {
+        data[key] = null;
+      }
+    });
+
+    const INPUTS = {
+      ID_origin_city: "ID_origin_city",
+      ID_destination_city: "ID_destination_city",
+    };
+
+    const PROCEDURE_NAME = "spSalesperson_GetTripsByRoute";
+
+    const result = await db.executeProcedure(data, INPUTS, PROCEDURE_NAME);
 
     if (result.recordset.length > 0) {
       if (result.recordset[0].StatusCode < 0) {

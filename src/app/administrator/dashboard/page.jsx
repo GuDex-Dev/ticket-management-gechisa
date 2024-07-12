@@ -1,23 +1,23 @@
 "use client";
-import { useSession } from "next-auth/react";
-import { useAppContext } from "@/components/context/AppSessionContextProvider";
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function DashboardAdministratorPage() {
-  const session = useSession();
-  const pathname = usePathname();
-  const { setNavbarOptions } = useAppContext();
-  useEffect(() => {
-    setNavbarOptions({
-      pathname: pathname,
-      options: [{ href: "/administrator/dashboard/trip", title: "Viajes" }],
-    });
-  }, [session]);
-
   return (
     <>
-      <div>DashboardAdministratorPage</div>
+      <div className="mx-auto grid w-8/12 grid-cols-1 gap-4">
+        <Link href="/administrator/trip/">
+          <Button className="w-full text-2xl font-bold">
+            Gestionar Viajes
+          </Button>
+        </Link>
+        <Link href="/administrator/reports">
+          <Button className="w-full text-2xl font-bold">
+            Mostrar Informes
+          </Button>
+        </Link>
+      </div>
     </>
   );
 }

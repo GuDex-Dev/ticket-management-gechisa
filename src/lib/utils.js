@@ -19,21 +19,6 @@ export const ROUTES = {
         name: "Viajes",
         children: {
           "/create": "Crear Viaje",
-          "/edit": "Editar Viaje",
-          "/view": {
-            name: "Ver Viaje",
-            children: {
-              "/passenger": "Pasajeros",
-              "/route": "Ruta",
-            },
-          },
-        },
-      },
-      "/route": {
-        name: "Rutas",
-        children: {
-          "/create": "Crear Ruta",
-          "/edit": "Editar Ruta",
         },
       },
     },

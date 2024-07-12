@@ -29,7 +29,6 @@ function BuyTicketPage() {
     handleDestinationCitySelect,
     updateTripTable,
     handleBuyTicket,
-    selectedTrip,
     setSelectedTrip,
   } = useBuyTicketForm();
 
@@ -123,17 +122,12 @@ function BuyTicketPage() {
           </form>
         </Form>
       </CardContent>
-      <DataTable columns={columns} data={trips} onRowSelect={setSelectedTrip} />
-      <Button
-        className="mt-4 w-full"
-        onClick={() => {
-          if (selectedTrip) {
-            handleBuyTicket(selectedTrip.ID);
-          } else {
-            alert("Por favor, seleccione un viaje.");
-          }
-        }}
-      >
+      <DataTable
+        columns={columns}
+        data={trips}
+        updateSelectedTrip={setSelectedTrip}
+      />
+      <Button className="mt-4 w-full" onClick={handleBuyTicket}>
         Comprar Boleto
       </Button>
     </Card>

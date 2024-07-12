@@ -36,7 +36,6 @@ export async function POST(req, res) {
     const result = await db.executeProcedure(data, INPUTS, PROCEDURE_NAME);
 
     if (result.recordset.length > 0) {
-      console.log(result.recordset[0]);
       if (result.recordset[0].StatusCode < 0) {
         const { StatusCode, ErrorMessage } = result.recordset[0];
         return NextResponse.json(

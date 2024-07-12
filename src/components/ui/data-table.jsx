@@ -10,12 +10,19 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export function DataTable({ columns, data }) {
+export function DataTable({ columns, data, updateSelectedTrip }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -24,6 +31,12 @@ export function DataTable({ columns, data }) {
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -40,11 +53,8 @@ export function DataTable({ columns, data }) {
         setRowSelection(newRowSelection);
       }
     },
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
+    meta: {
+      updateSelectedTrip,
     },
   });
 
@@ -87,7 +97,10 @@ export function DataTable({ columns, data }) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>

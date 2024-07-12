@@ -131,12 +131,17 @@ export const useBuyTicketForm = () => {
     ).toISOString();
   };
 
-  const handleBuyTicket = async (tripId) => {
+  const handleBuyTicket = async () => {
+    if (!selectedTrip) {
+      toast.error("No hay viaje seleccionado");
+      return;
+    }
     try {
-      await apiBuyTicket(sessionData?.user?.id, tripId);
+      await apiBuyTicket(sessionData?.user?.id, selectedTrip);
       toast.success("Boleto comprado exitosamente");
+      updateTripTable(form.getValues());
     } catch (error) {
-      toast.error("Error al comprar boleto");
+      toast.error("Error al comprar boleto: " + error.message);
       console.error("Error buying ticket:", error);
     }
   };
