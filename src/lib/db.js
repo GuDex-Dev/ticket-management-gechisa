@@ -7,9 +7,11 @@ const config = {
   server: process.env.DB_SERVER,
   database: process.env.DB_DATABASE,
   options: {
-    encrypt: true, // Usa 'false' si estás trabajando con SQL Server en una máquina local sin cifrado
+    encrypt: false, // Usa 'false' si estás trabajando con SQL Server en una máquina local sin cifrado
     trustServerCertificate: true, // Cambia esto a 'true' para evitar problemas de certificados en entornos de desarrollo
   },
+  connectionTimeout: 30000, // 30 segundos
+  requestTimeout: 30000, // 30 segundos
 };
 
 let poolPromise;
@@ -48,6 +50,12 @@ async function executeProcedure(data = null, inputs = null, procedureName) {
     throw error; // re-throw the error to be handled in the calling code
   }
 }
+
+// Para verificar las variables de entorno (solo para desarrollo)
+console.log("DB_USER:", process.env.DB_USER);
+console.log("DB_PASSWORD:", process.env.DB_PASSWORD);
+console.log("DB_SERVER:", process.env.DB_SERVER);
+console.log("DB_DATABASE:", process.env.DB_DATABASE);
 
 module.exports = {
   sql,
